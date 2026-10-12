@@ -1,5 +1,5 @@
 import { App, Notice, requestUrl } from 'obsidian';
-import {
+import type {
 	OpenAlephEntity,
 	OpenAlephPluginSettings,
 	OpenAlephPercolationApiResult,

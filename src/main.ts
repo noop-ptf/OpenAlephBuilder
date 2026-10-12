@@ -2,7 +2,7 @@
 
 import { Plugin, Notice, MarkdownView, TFile } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
-import { OpenAlephPluginSettings } from './types';
+import type { OpenAlephPluginSettings } from './types';
 import { ConfirmSendNoteModal, LoadingModal } from './modals';
 import { EntityGraphView, VIEW_TYPE_ENTITY_GRAPH } from './graphView';
 import {

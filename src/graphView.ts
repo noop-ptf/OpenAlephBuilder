@@ -2,7 +2,7 @@ import {
 	ItemView,
 	WorkspaceLeaf,
 	Notice,
-	ViewStateResult,
+	type ViewStateResult,
 	Menu,
 } from 'obsidian';
 import cytoscape from 'cytoscape';

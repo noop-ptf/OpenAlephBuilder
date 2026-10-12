@@ -1,7 +1,7 @@
 import { App, TFile, TFolder, normalizePath } from 'obsidian';
 import type { OpenAlephGraph } from './types';
 import { buildMarkdownTableContent } from './tableBuilder';
-import { ExplorationRecord } from './types';
+import type { ExplorationRecord } from './types';
 
 export async function ensureFolder(app: App, path: string): Promise<void> {
 	const normalized = normalizePath(path);

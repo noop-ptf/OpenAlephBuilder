@@ -7,10 +7,13 @@ import {
 	SecretComponent,
 	Setting,
 	SettingPage,
-	SettingDefinitionItem,
+	type SettingDefinitionItem,
 	requestUrl,
 } from 'obsidian';
-import { OpenAlephInstanceSettings, OpenAlephPluginSettings } from './types';
+import type {
+	OpenAlephInstanceSettings,
+	OpenAlephPluginSettings,
+} from './types';
 import OpenAlephPlugin from './main';
 
 export const DEFAULT_INSTANCE: Omit<OpenAlephInstanceSettings, 'id'> = {
