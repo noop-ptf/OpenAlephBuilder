@@ -1,46 +1,35 @@
 /* eslint-disable obsidianmd/ui/sentence-case -- This is all valid sentence case */
 
-import { Plugin, Notice, MarkdownView, TFile } from 'obsidian';
+import { Plugin, Notice, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
 import type { OpenAlephPluginSettings } from './types';
-import { ConfirmSendNoteModal, LoadingModal } from './modals';
-import { EntityGraphView, VIEW_TYPE_ENTITY_GRAPH } from './graphView';
-import {
-	saveExploration,
-	linkNoteToExploration,
-	openTableFile,
-} from './storage';
-import { explore } from './requests';
+import { OpenAlephBuilderView, VIEW_TYPE_OPENALEPH_BUILDER } from './view';
+
+export interface ResizableSidebarSplit {
+	collapsed: boolean;
+	size: number;
+	containerEl: HTMLElement;
+	setSize(size: number): void;
+	expand(): void;
+	collapse(): void;
+}
 
 export default class OpenAlephPlugin extends Plugin {
 	settings!: OpenAlephPluginSettings;
 
-	async onload(): Promise<void> {
-		this.registerView(
-			VIEW_TYPE_ENTITY_GRAPH,
-			(leaf) => new EntityGraphView(leaf, this),
-		);
-
-		this.registerObsidianProtocolHandler('openaleph-graph', (params) => {
-			const uuid = params.uuid;
-			if (!uuid) {
-				new Notice('Missing exploration ID in link.');
-				return;
-			}
-			this.openGraphForUuid(uuid).catch((err: unknown) => {
-				const message =
-					err instanceof Error ? err.message : String(err);
-				new Notice(message);
-			});
-		});
-
+	async onload() {
 		await this.loadSettings();
 
 		this.addSettingTab(new OpenAlephSettingTab(this.app, this));
 
+		this.registerView(
+			VIEW_TYPE_OPENALEPH_BUILDER,
+			(leaf) => new OpenAlephBuilderView(leaf, this),
+		);
+
 		this.addRibbonIcon(
-			'telescope',
-			'OpenAleph Explore',
+			'factory',
+			'OpenAleph Builder',
 			(_evt: MouseEvent) => {
 				this.activateView().catch((err: unknown) => {
 					const message =
@@ -49,6 +38,14 @@ export default class OpenAlephPlugin extends Plugin {
 				});
 			},
 		);
+
+		this.addCommand({
+			id: 'search-openaleph-instances',
+			name: 'Open search view',
+			callback: () => this.activateView(),
+		});
+
+		this.addSettingTab(new OpenAlephSettingTab(this.app, this));
 	}
 
 	async loadSettings(): Promise<void> {
@@ -60,76 +57,28 @@ export default class OpenAlephPlugin extends Plugin {
 	}
 
 	async activateView(): Promise<void> {
-		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+		const { workspace } = this.app;
 
-		if (!view) {
-			throw new Error('No note is currently open.');
+		let leaf: WorkspaceLeaf | null =
+			workspace.getLeavesOfType(VIEW_TYPE_OPENALEPH_BUILDER)[0] ?? null;
+
+		if (!leaf) {
+			leaf = workspace.getLeftLeaf(false);
+			if (!leaf) return;
+			await leaf.setViewState({
+				type: VIEW_TYPE_OPENALEPH_BUILDER,
+				active: true,
+			});
 		}
 
-		const noteFile = view.file;
-		if (!noteFile) {
-			throw new Error('No note is currently open.');
+		const leftSplit =
+			workspace.leftSplit as unknown as ResizableSidebarSplit;
+
+		if (leftSplit?.collapsed) {
+			leftSplit.expand();
 		}
 
-		const noteName = noteFile.basename;
-		const content = view.editor.getValue();
-
-		new ConfirmSendNoteModal(
-			this.app,
-			noteName,
-			content,
-			(maxPercolatedEntities) => {
-				void this.handleExplore(
-					content,
-					noteName,
-					noteFile,
-					maxPercolatedEntities,
-				);
-			},
-		).open();
-	}
-
-	private async handleExplore(
-		content: string,
-		noteName: string,
-		noteFile: TFile,
-		maxPercolatedEntities: number,
-	): Promise<void> {
-		const loadingModal = new LoadingModal(this.app);
-		loadingModal.open();
-
-		try {
-			const entities = await explore(
-				this.settings,
-				this.app,
-				content,
-				noteName,
-				maxPercolatedEntities,
-			);
-
-			const record = await saveExploration(this.app, entities);
-			await linkNoteToExploration(this.app, noteFile, record);
-			await openTableFile(this.app, record);
-		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : String(err);
-			new Notice(message);
-		} finally {
-			loadingModal.close();
-		}
-	}
-
-	private async openGraphForUuid(uuid: string): Promise<void> {
-		const leaf =
-			this.app.workspace.getLeavesOfType(VIEW_TYPE_ENTITY_GRAPH)[0] ??
-			this.app.workspace.getLeaf('tab');
-
-		await leaf.setViewState({
-			type: VIEW_TYPE_ENTITY_GRAPH,
-			active: true,
-			state: { uuid },
-		});
-
-		await this.app.workspace.revealLeaf(leaf);
+		await workspace.revealLeaf(leaf);
 	}
 
 	async saveSettings() {
