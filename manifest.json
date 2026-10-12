@@ -1,9 +1,9 @@
 {
-	"id": "openaleph-explore",
-	"name": "OpenAleph Explore",
-	"version": "1.0.1",
+	"id": "openaleph-builder",
+	"name": "OpenAleph Builder",
+	"version": "0.0.1",
 	"minAppVersion": "1.13.0",
-	"description": "Turn your notes into contextual, structured data, by querying OpenAleph instances.",
+	"description": "Manually build structured Follow the Money data and upload to OpenAleph instances.",
 	"author": "noop",
 	"isDesktopOnly": false
 }
