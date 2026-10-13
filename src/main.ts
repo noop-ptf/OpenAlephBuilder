@@ -44,8 +44,6 @@ export default class OpenAlephPlugin extends Plugin {
 			name: 'Open search view',
 			callback: () => this.activateView(),
 		});
-
-		this.addSettingTab(new OpenAlephSettingTab(this.app, this));
 	}
 
 	async loadSettings(): Promise<void> {

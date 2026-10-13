@@ -1,14 +1,14 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
-// Import the Counter Svelte component and the `mount` and `unmount` methods.
-import Counter from './Counter.svelte';
 import { mount, unmount } from 'svelte';
 import OpenAlephPlugin from './main';
+import EntityCardGrid from './EntityCardGrid.svelte';
+import { cards } from './investigationStore.svelte';
 
 export const VIEW_TYPE_OPENALEPH_BUILDER = 'openaleph-builder-view';
 
 export class OpenAlephBuilderView extends ItemView {
 	// A variable to hold on to the Counter instance mounted in this ItemView.
-	counter: ReturnType<typeof Counter> | undefined;
+	grid: ReturnType<typeof EntityCardGrid> | undefined;
 	constructor(leaf: WorkspaceLeaf, _plugin: OpenAlephPlugin) {
 		super(leaf);
 	}
@@ -26,20 +26,18 @@ export class OpenAlephBuilderView extends ItemView {
 	}
 
 	async onOpen(): Promise<void> {
-		this.counter = mount(Counter, {
+		this.grid = mount(EntityCardGrid, {
 			target: this.contentEl,
 			props: {
-				startCount: 5,
+				cards,
 			},
 		});
-		// Since the component instance is typed, the exported `increment` method is known to TypeScript.
-		this.counter.increment();
 	}
 
 	async onClose(): Promise<void> {
-		if (this.counter) {
-			// Remove the Counter from the ItemView.
-			unmount(this.counter);
+		if (this.grid) {
+			// Remove the EntityCardGrid from the ItemView.
+			unmount(this.grid);
 		}
 	}
 }
