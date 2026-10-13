@@ -48,6 +48,8 @@ const context = await esbuild.context({
 	outfile: 'main.js',
 	minify: prod,
 	define: {},
+	conditions: ['svelte', 'browser'],
+	mainFields: ['svelte', 'browser', 'module', 'main'],
 });
 
 if (prod) {
