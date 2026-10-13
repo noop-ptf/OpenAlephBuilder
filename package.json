@@ -30,6 +30,7 @@
 		"typescript-eslint": "^8.59.1"
 	},
 	"dependencies": {
-		"@opensanctions/followthemoney": "^4.10.0"
+		"@opensanctions/followthemoney": "^4.10.0",
+		"bits-ui": "^2.19.5"
 	}
 }
