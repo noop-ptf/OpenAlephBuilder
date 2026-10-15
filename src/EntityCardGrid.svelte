@@ -3,7 +3,10 @@
   import { listEntitySchemata } from "./ftm";
   import { createCardState, type CardState } from "./entityCard";
   import EntityCard from "./EntityCard.svelte";
+  import CollectionSelector from "./CollectionSelector.svelte";
+  import { type OpenAlephCollection } from "./types";
 
+  let { loadCollections }: { loadCollections: () => Promise<OpenAlephCollection[]>} = $props();
   const schemata: Schema[] = listEntitySchemata();
 
   // The shared store array: only ever mutated in place, never reassigned.
@@ -50,9 +53,12 @@
     dragIndex = null;
     overIndex = null;
   }
+
+  let selectedCollection = $state(null);
 </script>
 
 <div class="grid-wrap">
+    <CollectionSelector {loadCollections} bind:selected={selectedCollection} />
   <div class="grid">
     {#each cards as card, index (card.key)}
       <EntityCard
@@ -76,6 +82,7 @@
       <span>Add entity</span>
     </button>
   </div>
+	<button onclick={loadCollections}>Post to collection {selectedCollection}</button>
 </div>
 
 <style>

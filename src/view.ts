@@ -8,8 +8,11 @@ export const VIEW_TYPE_OPENALEPH_BUILDER = 'openaleph-builder-view';
 export class OpenAlephBuilderView extends ItemView {
 	// A variable to hold on to the Counter instance mounted in this ItemView.
 	grid: ReturnType<typeof EntityCardGrid> | undefined;
-	constructor(leaf: WorkspaceLeaf, _plugin: OpenAlephPlugin) {
+	private plugin: OpenAlephPlugin;
+
+	constructor(leaf: WorkspaceLeaf, plugin: OpenAlephPlugin) {
 		super(leaf);
+		this.plugin = plugin;
 	}
 
 	getViewType(): string {
@@ -27,6 +30,9 @@ export class OpenAlephBuilderView extends ItemView {
 	async onOpen(): Promise<void> {
 		this.grid = mount(EntityCardGrid, {
 			target: this.contentEl,
+			props: {
+				loadCollections: () => this.plugin.loadCollections(),
+			},
 		});
 	}
 

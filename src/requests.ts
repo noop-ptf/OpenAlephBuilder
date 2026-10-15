@@ -7,6 +7,8 @@ import type {
 	OpenAlephGraph,
 	OpenAlephCloselyCorrelatedApiResult,
 	OpenAlephCloselyCorrelatedApiTerm,
+	OpenAlephCollection,
+	OpenAlephCollectionApiResult,
 	OpenAlephInstanceSettings,
 } from './types';
 
@@ -281,4 +283,80 @@ export async function getEntity(
 
 	const body = res.json as unknown;
 	return body as OpenAlephEntity;
+}
+
+async function getInstanceCollections(
+	instanceUrl: string,
+	instanceId: string,
+	apiKey: string | null,
+): Promise<OpenAlephCollection[]> {
+	if (!apiKey || apiKey.trim() === '') {
+		throw new Error(`API key for ${instanceUrl} is empty.`);
+	}
+
+	// As we're interested in all writeable collections, but
+	// we can't filter for them until OpenAleph issue #137 is fixed,
+	// https://github.com/openaleph/openaleph/issues/137
+	// we have to fetch *all* collections and filter locally.
+	//
+	// TODO: Maybe change the strategy if this turns out to be too slow.
+	const url = new URL('/api/2/collections', instanceUrl);
+	// first request to determine the total
+	url.searchParams.set('limit', '1');
+
+	const headers: Record<string, string> = {
+		'User-Agent': 'alephclient',
+		Authorization: apiKey,
+		Pragma: 'no-cache',
+	};
+
+	const preRes = await requestUrl({
+		url: url.toString(),
+		method: 'GET',
+		contentType: 'application/json',
+		headers,
+	});
+
+	const preJsonRes = preRes.json as unknown as OpenAlephCollectionApiResult;
+
+	// Now fetch all of them
+	url.searchParams.set('limit', String(preJsonRes.total));
+	const res = await requestUrl({
+		url: url.toString(),
+		method: 'GET',
+		contentType: 'application/json',
+		headers,
+	});
+	const jsonRes = res.json as unknown as OpenAlephCollectionApiResult;
+	const writeableCollections = jsonRes.results.filter((c) => c.writeable);
+
+	return writeableCollections.map((c) => {
+		return { ...c, instanceId };
+	});
+}
+
+export async function getCollections(
+	settings: OpenAlephPluginSettings,
+	app: App,
+): Promise<OpenAlephCollection[]> {
+	const enabledInstances = settings.instances.filter(
+		(instance) => instance.enabled,
+	);
+	let result: OpenAlephCollection[] = [];
+	for (const enabledInstance of enabledInstances) {
+		const apiKey = app.secretStorage.getSecret(enabledInstance.apiKeyName);
+		try {
+			// get related entities
+			const collections = await getInstanceCollections(
+				enabledInstance.instanceUrl,
+				enabledInstance.id,
+				apiKey,
+			);
+			// TODO: consolidate collections from more than one instance
+			result = result.concat(collections);
+		} catch {
+			console.log('ERROR');
+		}
+	}
+	return result;
 }

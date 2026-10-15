@@ -1,24 +1,15 @@
 <script lang="ts">
-  import { type Collection } from "$lib/openaleph/types";
-  import { HttpClient, type OpenAlephInstanceSettings } from "$lib/client/http";
-  import { createResource } from "$lib/store";
+  import { createResource } from "./store";
   import { onMount } from "svelte";
+	import type { OpenAlephCollection } from "./types";
 
   type Props = {
-    settings: OpenAlephInstanceSettings;
-    selected: Collection["id"] | null;
+	  loadCollections: () => Promise<OpenAlephCollection[]>,
+    selected: OpenAlephCollection["id"] | null;
   };
-  let { settings, selected = $bindable() }: Props = $props();
+  let { loadCollections, selected = $bindable() }: Props = $props();
 
-  async function availableCollections(): Promise<Collection[]> {
-    const client = new HttpClient(settings);
-    let collections = await client.getCollections();
-    console.log("available");
-    console.log(collections);
-    return collections;
-  }
-
-  const collections = createResource(() => availableCollections());
+  const collections = createResource(() => loadCollections());
 
   onMount(() => collections.load());
 </script>
@@ -37,7 +28,7 @@
       <option value={collection.id}>
         {collection.label}{collection.summary
           ? ` (${collection.summary})`
-          : undefined}
+          : undefined} {collection.instanceId.slice(0, 4)}
       </option>
     {/each}
   </select>

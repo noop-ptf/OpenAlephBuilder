@@ -33,6 +33,20 @@ export interface OpenAlephCloselyCorrelatedApiTerm {
 	searchQuery?: string;
 }
 
+export interface OpenAlephCollection {
+	id: string;
+	label: string;
+	writeable: boolean;
+	instanceId: string;
+	summary?: string;
+}
+
+export interface OpenAlephCollectionApiResult {
+	status: string;
+	total: number;
+	results: Omit<OpenAlephCollection, 'instanceId'>[];
+}
+
 export interface OpenAlephPercolationApiResult {
 	status: string;
 	results: OpenAlephPercolationApiEntity[];
