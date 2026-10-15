@@ -17,7 +17,7 @@ export class OpenAlephBuilderView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Federated OpenAleph builder';
+		return 'Federated OpenAleph Builder';
 	}
 
 	getIcon(): string {

@@ -36,7 +36,12 @@ export default defineConfig(
 			'obsidianmd/ui/sentence-case': [
 				'warn',
 				{
-					brands: ['OpenAleph', 'FollowTheMoney', 'Obsidian'],
+					brands: [
+						'OpenAleph',
+						'OpenAleph Builder',
+						'FollowTheMoney',
+						'Obsidian',
+					],
 					mode: 'loose',
 				},
 			],

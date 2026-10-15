@@ -1,5 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case -- This is all valid sentence case */
-
 import {
 	App,
 	Notice,
@@ -35,7 +33,7 @@ class InstancesPage extends SettingPage {
 		private app: App,
 	) {
 		super();
-		this.title = 'Instance Configuration';
+		this.title = 'Instance configuration';
 	}
 
 	private renderInstance(
@@ -228,5 +226,3 @@ async function canConnect(instanceUrl: string, apiKey: string | null) {
 		return false;
 	}
 }
-
-/* eslint-enable obsidianmd/ui/sentence-case -- Done with weird sentnces */

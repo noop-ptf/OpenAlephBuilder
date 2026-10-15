@@ -1,5 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case -- This is all valid sentence case */
-
 import { Plugin, Notice, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
 import type { OpenAlephPluginSettings } from './types';
@@ -83,5 +81,3 @@ export default class OpenAlephPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 }
-
-/* eslint-enable obsidianmd/ui/sentence-case -- Done with weird sentnces */
