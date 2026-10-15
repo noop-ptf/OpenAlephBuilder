@@ -17,6 +17,9 @@ const context = await esbuild.context({
 		esbuildSvelte({
 			compilerOptions: { css: 'injected' },
 			preprocess: sveltePreprocess(),
+			// Ignore compiler warnings from third-party .svelte sources (e.g. buits-ui)
+			filterWarnings: (warning) =>
+				!warning.filename?.includes('node_modules'),
 		}),
 	],
 	banner: {
