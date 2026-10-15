@@ -2,7 +2,6 @@ import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { mount, unmount } from 'svelte';
 import OpenAlephPlugin from './main';
 import EntityCardGrid from './EntityCardGrid.svelte';
-import { cards } from './investigationStore.svelte';
 
 export const VIEW_TYPE_OPENALEPH_BUILDER = 'openaleph-builder-view';
 
@@ -18,7 +17,7 @@ export class OpenAlephBuilderView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Federated OpenAleph Builder';
+		return 'Federated OpenAleph builder';
 	}
 
 	getIcon(): string {
@@ -28,16 +27,14 @@ export class OpenAlephBuilderView extends ItemView {
 	async onOpen(): Promise<void> {
 		this.grid = mount(EntityCardGrid, {
 			target: this.contentEl,
-			props: {
-				cards,
-			},
 		});
 	}
 
 	async onClose(): Promise<void> {
 		if (this.grid) {
 			// Remove the EntityCardGrid from the ItemView.
-			unmount(this.grid);
+			await unmount(this.grid);
+			this.grid = undefined;
 		}
 	}
 }

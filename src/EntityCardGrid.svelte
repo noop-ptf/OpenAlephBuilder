@@ -7,7 +7,7 @@
   const schemata: Schema[] = listEntitySchemata();
 
   // The shared store array: only ever mutated in place, never reassigned.
-  let { cards }: { cards: CardState[] } = $props();
+  let cards = $state<CardState[]>([]);
   let dragIndex = $state<number | null>(null);
   let overIndex = $state<number | null>(null);
 
