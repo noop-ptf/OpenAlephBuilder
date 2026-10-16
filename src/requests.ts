@@ -11,6 +11,7 @@ import type {
 	OpenAlephCollectionApiResult,
 	OpenAlephInstanceSettings,
 } from './types';
+import type { Entity } from '@opensanctions/followthemoney';
 
 const MAX_CLOSELY_CORRELATED_TERMS = 5;
 
@@ -359,4 +360,40 @@ export async function getCollections(
 		}
 	}
 	return result;
+}
+
+export async function bulkEntityUpload(
+	settings: OpenAlephPluginSettings,
+	app: App,
+	entities: Entity[],
+	collection: OpenAlephCollection,
+) {
+	const instance = settings.instances.find(
+		(instance) => instance.id === collection.instanceId,
+	);
+	console.log('bEU - instance?');
+	if (!instance) return;
+	console.log('bEU - instance!');
+	const apiKey = app.secretStorage.getSecret(instance.apiKeyName);
+	if (!apiKey || apiKey.trim() === '') {
+		throw new Error(`API key for ${instance.instanceUrl} is empty.`);
+	}
+	const headers: Record<string, string> = {
+		'User-Agent': 'alephclient',
+		Authorization: apiKey,
+		Pragma: 'no-cache',
+	};
+
+	const url = new URL(
+		`/api/2/collections/${collection.id}/bulk`,
+		instance.instanceUrl,
+	);
+	const res = await requestUrl({
+		url: url.toString(),
+		method: 'POST',
+		contentType: 'application/json',
+		headers,
+		body: JSON.stringify(entities),
+	});
+	console.log(res);
 }

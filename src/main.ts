@@ -2,7 +2,8 @@ import { Plugin, Notice, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
 import type { OpenAlephCollection, OpenAlephPluginSettings } from './types';
 import { OpenAlephBuilderView, VIEW_TYPE_OPENALEPH_BUILDER } from './view';
-import { getCollections } from './requests';
+import { getCollections, bulkEntityUpload } from './requests';
+import type { Entity } from '@opensanctions/followthemoney';
 
 export interface ResizableSidebarSplit {
 	collapsed: boolean;
@@ -80,16 +81,20 @@ export default class OpenAlephPlugin extends Plugin {
 
 	async loadCollections(): Promise<OpenAlephCollection[]> {
 		try {
-			console.log(this.settings);
 			const collections = await getCollections(this.settings, this.app);
-			console.log(collections);
 			return collections;
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
 			new Notice(message);
-			console.log(message);
 		}
 		return [];
+	}
+
+	async bulkEntityUpload(
+		entities: Entity[],
+		collection: OpenAlephCollection,
+	) {
+		await bulkEntityUpload(this.settings, this.app, entities, collection);
 	}
 
 	async saveSettings() {

@@ -2,6 +2,8 @@ import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { mount, unmount } from 'svelte';
 import OpenAlephPlugin from './main';
 import EntityCardGrid from './EntityCardGrid.svelte';
+import type { Entity } from '@opensanctions/followthemoney';
+import type { OpenAlephCollection } from './types';
 
 export const VIEW_TYPE_OPENALEPH_BUILDER = 'openaleph-builder-view';
 
@@ -32,6 +34,10 @@ export class OpenAlephBuilderView extends ItemView {
 			target: this.contentEl,
 			props: {
 				loadCollections: () => this.plugin.loadCollections(),
+				bulkEntityUpload: (
+					entities: Entity[],
+					collection: OpenAlephCollection,
+				) => this.plugin.bulkEntityUpload(entities, collection),
 			},
 		});
 	}
