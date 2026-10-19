@@ -100,4 +100,13 @@ export default class OpenAlephPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	onunload() {
+		// This is mostly relevant for hot reloading during development:
+		// In order to clean up previous styles we need to actively throw
+		// them away, otherwise they just pile up on every CSS change.
+		document
+			.querySelectorAll('head style[id^="oab-"]')
+			.forEach((el) => el.remove());
+	}
 }

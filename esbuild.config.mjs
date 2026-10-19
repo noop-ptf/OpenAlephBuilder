@@ -15,9 +15,17 @@ const prod = process.argv[2] === 'production';
 const context = await esbuild.context({
 	plugins: [
 		esbuildSvelte({
-			compilerOptions: { css: 'injected' },
+			compilerOptions: {
+				css: 'injected',
+				// Using a custom content-based hash in order to allow for
+				// CSS hot-reloading in Obsidian. The filename is included
+				// such that components with identical style blocks don't
+				// share a hash.
+				cssHash: ({ css, filename, hash }) =>
+					`oab-${hash(filename + css)}`,
+			},
 			preprocess: sveltePreprocess(),
-			// Ignore compiler warnings from third-party .svelte sources (e.g. buits-ui)
+			// Ignore compiler warnings from third-party .svelte sources (e.g. bits-ui)
 			filterWarnings: (warning) =>
 				!warning.filename?.includes('node_modules'),
 		}),
