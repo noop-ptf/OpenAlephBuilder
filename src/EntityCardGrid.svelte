@@ -4,18 +4,23 @@
 	import { createCardState, type CardState } from './entityCard';
 	import EntityCard from './EntityCard.svelte';
 	import CollectionSelector from './CollectionSelector.svelte';
-	import { type OpenAlephCollection } from './types';
+	import type {
+		OpenAlephCollection,
+		OpenAlephInstanceSettings,
+	} from './types';
 	import type { Entity } from '@opensanctions/followthemoney';
 
 	let {
 		loadCollections,
 		bulkEntityUpload,
+		getInstanceSettings,
 	}: {
 		loadCollections: () => Promise<OpenAlephCollection[]>;
 		bulkEntityUpload: (
 			entities: Entity[],
 			collection: OpenAlephCollection,
 		) => void;
+		getInstanceSettings: (id: string) => OpenAlephInstanceSettings;
 	} = $props();
 	const schemata: Schema[] = listEntitySchemata();
 
@@ -81,8 +86,12 @@
 	}
 </script>
 
-<div class="grid-wrap">
-	<CollectionSelector {loadCollections} bind:selectedCollection />
+<div class="rows">
+	<CollectionSelector
+		{loadCollections}
+		{getInstanceSettings}
+		bind:selectedCollection
+	/>
 	<div class="grid">
 		{#each cards as card, index (card.key)}
 			<EntityCard
@@ -112,11 +121,10 @@
 </div>
 
 <style>
-	.grid-wrap {
-		width: 100%;
-		max-width: 1100px;
-		margin: 0 auto;
-		padding: 0 1rem;
+	.rows {
+		display: flex;
+		gap: 12px;
+		flex-direction: column;
 	}
 
 	.grid {

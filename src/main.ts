@@ -1,6 +1,10 @@
 import { Plugin, Notice, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
-import type { OpenAlephCollection, OpenAlephPluginSettings } from './types';
+import type {
+	OpenAlephCollection,
+	OpenAlephInstanceSettings,
+	OpenAlephPluginSettings,
+} from './types';
 import { OpenAlephBuilderView, VIEW_TYPE_OPENALEPH_BUILDER } from './view';
 import { getCollections, bulkEntityUpload } from './requests';
 import type { Entity } from '@opensanctions/followthemoney';
@@ -95,6 +99,10 @@ export default class OpenAlephPlugin extends Plugin {
 		collection: OpenAlephCollection,
 	) {
 		await bulkEntityUpload(this.settings, this.app, entities, collection);
+	}
+
+	getInstanceSettings(id: string): OpenAlephInstanceSettings | undefined {
+		return this.settings.instances.find((instance) => instance.id === id);
 	}
 
 	async saveSettings() {
