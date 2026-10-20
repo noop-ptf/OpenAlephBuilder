@@ -26,8 +26,6 @@
 
 	// The shared store array: only ever mutated in place, never reassigned.
 	let cards = $state<CardState[]>([]);
-	let dragIndex = $state<number | null>(null);
-	let overIndex = $state<number | null>(null);
 
 	function addCard() {
 		cards.push(createCardState(true));
@@ -35,42 +33,6 @@
 
 	function removeCard(index: number) {
 		cards.splice(index, 1);
-	}
-
-	// Native HTML5 drag-and-drop (draggable/dataTransfer) is unreliable across
-	// webviews — notably WKWebView, which Tauri uses on macOS, has long-standing
-	// gaps in its HTML5 DnD support. Pointer events don't depend on the browser's
-	// drag implementation at all, so they behave the same in a plain browser and
-	// inside the Tauri shell.
-	function startDrag(index: number) {
-		return (event: PointerEvent) => {
-			event.preventDefault();
-			dragIndex = index;
-			overIndex = index;
-			window.addEventListener('pointermove', handlePointerMove);
-			window.addEventListener('pointerup', handlePointerUp);
-		};
-	}
-
-	function handlePointerMove(event: PointerEvent) {
-		const target = document.elementFromPoint(event.clientX, event.clientY);
-		const cardEl = target?.closest<HTMLElement>('[data-card-index]');
-		if (cardEl) overIndex = Number(cardEl.dataset.cardIndex);
-	}
-
-	function handlePointerUp() {
-		window.removeEventListener('pointermove', handlePointerMove);
-		window.removeEventListener('pointerup', handlePointerUp);
-		if (
-			dragIndex !== null &&
-			overIndex !== null &&
-			dragIndex !== overIndex
-		) {
-			const [moved] = cards.splice(dragIndex, 1);
-			cards.splice(overIndex, 0, moved);
-		}
-		dragIndex = null;
-		overIndex = null;
 	}
 
 	let selectedCollection: OpenAlephCollection | null = $state(null);
@@ -86,51 +48,46 @@
 	}
 </script>
 
-<div class="rows">
-	<CollectionSelector
-		{loadCollections}
-		{getInstanceSettings}
-		bind:selectedCollection
-	/>
-	<div class="grid">
-		{#each cards as card, index (card.key)}
-			<EntityCard
-				bind:card={cards[index]}
-				{schemata}
-				{index}
-				dragging={dragIndex === index}
-				dragOver={overIndex === index && dragIndex !== index}
-				onremove={() => removeCard(index)}
-				onhandlepointerdown={startDrag(index)}
-			/>
-		{/each}
+<h2>Open Aleph FtM Builder</h2>
+<h3>Target Collection</h3>
+<p>Where do you want to create Follow the Money Entities?</p>
+<CollectionSelector
+	{loadCollections}
+	{getInstanceSettings}
+	bind:selectedCollection
+/>
+<h3>Entities</h3>
+<div class="entities">
+	{#each cards as card, index (card.key)}
+		<EntityCard
+			bind:card={cards[index]}
+			{schemata}
+			onremove={() => removeCard(index)}
+		/>
+	{/each}
 
-		<button
-			type="button"
-			class="card ghost"
-			onclick={addCard}
-			aria-label="Add entity"
-		>
-			<span class="plus" aria-hidden="true">+</span>
-			<span>Add entity</span>
-		</button>
-	</div>
-	<button onclick={postEntitiesToSelectedCollection}
-		>Post to collection {selectedCollection?.id}</button
+	<button
+		type="button"
+		class="card ghost"
+		onclick={addCard}
+		aria-label="Add entity"
 	>
+		<span class="plus" aria-hidden="true">+</span>
+		<span>Add entity</span>
+	</button>
 </div>
+<h3>Upload/Export</h3>
+<button onclick={postEntitiesToSelectedCollection}
+	>Post to collection {selectedCollection?.id}</button
+>
 
 <style>
-	.rows {
+	.entities {
 		display: flex;
-		gap: 12px;
 		flex-direction: column;
-	}
-
-	.grid {
-		display: flex;
-		flex-wrap: wrap;
+		justify-items: stretch;
 		gap: 12px;
+		margin-block: 12px;
 	}
 
 	.card.ghost {
@@ -138,7 +95,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: 260px;
 		min-height: 120px;
 		gap: 0.3em;
 		border-radius: 8px;
@@ -146,6 +102,7 @@
 		background: transparent;
 		box-shadow: none;
 		opacity: 0.6;
+		margin-inline: 0;
 	}
 
 	.card.ghost:hover,
