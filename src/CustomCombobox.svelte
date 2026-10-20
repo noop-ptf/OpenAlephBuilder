@@ -1,92 +1,92 @@
 <script
-  lang="ts"
-  generics="T extends { value: string; label: string; disabled?: boolean }"
+	lang="ts"
+	generics="T extends { value: string; label: string; disabled?: boolean }"
 >
-  import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
-  import CaretDoubleUpIcon from "phosphor-svelte/lib/CaretDoubleUpIcon";
-  import CaretDoubleDownIcon from "phosphor-svelte/lib/CaretDoubleDownIcon";
-  import { fuzzyFilter } from "./fuzzy";
-  import type { Snippet } from "svelte";
+	import { Combobox, type WithoutChildrenOrChild, mergeProps } from 'bits-ui';
+	import CaretDoubleUpIcon from 'phosphor-svelte/lib/CaretDoubleUpIcon';
+	import CaretDoubleDownIcon from 'phosphor-svelte/lib/CaretDoubleDownIcon';
+	import { fuzzyFilter } from './fuzzy';
+	import type { Snippet } from 'svelte';
 
-  type Props = Omit<
-    Combobox.RootProps,
-    "items" | "type" | "value" | "onValueChange"
-  > & {
-    value?: string;
-    items?: T[];
-    inputProps?: WithoutChildrenOrChild<Combobox.InputProps>;
-    contentProps?: WithoutChildrenOrChild<Combobox.ContentProps>;
-    onValueChange?: (value: string) => void;
-    itemRow: Snippet<[T]>;
-    valueIcon?: Snippet<[string | undefined]>;
-  };
+	type Props = Omit<
+		Combobox.RootProps,
+		'items' | 'type' | 'value' | 'onValueChange'
+	> & {
+		value?: string;
+		items?: T[];
+		inputProps?: WithoutChildrenOrChild<Combobox.InputProps>;
+		contentProps?: WithoutChildrenOrChild<Combobox.ContentProps>;
+		onValueChange?: (value: string) => void;
+		itemRow: Snippet<[T]>;
+		valueIcon?: Snippet<[string | undefined]>;
+	};
 
-  let {
-    items = [],
-    value = $bindable(),
-    open = $bindable(false),
-    inputProps,
-    contentProps,
-    itemRow,
-    valueIcon,
-    ...restProps
-  }: Props = $props();
+	let {
+		items = [],
+		value = $bindable(),
+		open = $bindable(false),
+		inputProps,
+		contentProps,
+		itemRow,
+		valueIcon,
+		...restProps
+	}: Props = $props();
 
-  let searchValue = $state("");
-  let inputRef: HTMLInputElement | null = $state(null);
+	let searchValue = $state('');
+	let inputRef: HTMLInputElement | null = $state(null);
 
-  const filteredItems = $derived(fuzzyFilter(items, searchValue));
+	const filteredItems = $derived(fuzzyFilter(items, searchValue));
 
-  // Bits UI's Combobox.Input isn't externally bindable, so we track the
-  // typed text ourselves for filtering...
-  function handleInput(e: Event & { currentTarget: HTMLInputElement }) {
-    searchValue = e.currentTarget.value;
-  }
+	// Bits UI's Combobox.Input isn't externally bindable, so we track the
+	// typed text ourselves for filtering...
+	function handleInput(e: Event & { currentTarget: HTMLInputElement }) {
+		searchValue = e.currentTarget.value;
+	}
 
-  // Writing this directly is a bit hacky and leads to a stale Bits UI state
-  // but updating inputValue properly is much more involved and I didn't
-  // want to go down that route.
-  function syncDisplayValue() {
-    if (inputRef) {
-      inputRef.value = items.find((i) => i.value === value)?.label || "";
-    }
-  }
+	// Writing this directly is a bit hacky and leads to a stale Bits UI state
+	// but updating inputValue properly is much more involved and I didn't
+	// want to go down that route.
+	function syncDisplayValue() {
+		if (inputRef) {
+			inputRef.value = items.find((i) => i.value === value)?.label || '';
+		}
+	}
 
-  // ...and on close without a new pick (e.g. clicking away mid-search) we
-  // reset the input's DOM value directly, since that's the only way to
-  // restore the display to the current selection rather than leaving the
-  // abandoned search term on screen.
-  function handleOpenChangeComplete(open: boolean) {
-    if (open) return;
-    searchValue = "";
-    syncDisplayValue();
-  }
+	// ...and on close without a new pick (e.g. clicking away mid-search) we
+	// reset the input's DOM value directly, since that's the only way to
+	// restore the display to the current selection rather than leaving the
+	// abandoned search term on screen.
+	function handleOpenChangeComplete(open: boolean) {
+		if (open) return;
+		searchValue = '';
+		syncDisplayValue();
+	}
 
-  // Also sync on mount/whenever value or items change externally (e.g. a
-  // sidebar re-mounting this combobox with an already-selected value) —
-  // handleOpenChangeComplete alone only covers closing an interactively
-  // opened popover, not a fresh mount that starts pre-selected.
-  $effect(() => {
-    value;
-    items;
-    syncDisplayValue();
-  });
+	// Also sync on mount/whenever value or items change externally (e.g. a
+	// sidebar re-mounting this combobox with an already-selected value) —
+	// handleOpenChangeComplete alone only covers closing an interactively
+	// opened popover, not a fresh mount that starts pre-selected.
+	$effect(() => {
+		value;
+		items;
+		syncDisplayValue();
+	});
 
-  function handleInputFocus(e: Event & { currentTarget: HTMLInputElement }) {
-    e.currentTarget.select();
-  }
+	function handleInputFocus(e: Event & { currentTarget: HTMLInputElement }) {
+		e.currentTarget.select();
+	}
 
-  const mergedRootProps = $derived(
-    mergeProps(restProps, {
-      onOpenChangeComplete: handleOpenChangeComplete,
-    }),
-  );
-  const mergedInputProps = $derived(
-    mergeProps(inputProps, {
-      oninput: handleInput,
-      onfocus: handleInputFocus,
-    }),
-  );
+	const mergedRootProps = $derived(
+		mergeProps(restProps, {
+			onOpenChangeComplete: handleOpenChangeComplete,
+		}),
+	);
+	const mergedInputProps = $derived(
+		mergeProps(inputProps, {
+			oninput: handleInput,
+			onfocus: handleInputFocus,
+		}),
+	);
 </script>
 
 <!--
@@ -95,87 +95,89 @@ so we cast the value to `never` to avoid type errors here. However, on the consu
 side, the component will still be type-checked correctly.
 -->
 <Combobox.Root
-  type="single"
-  {items}
-  bind:value={value as never}
-  bind:open
-  {...mergedRootProps}
+	type="single"
+	{items}
+	bind:value={value as never}
+	bind:open
+	{...mergedRootProps}
 >
-  <div class="control">
-    {#if valueIcon}
-      {@render valueIcon(value)}
-    {/if}
-    <Combobox.Input
-      class="combobox-input"
-      bind:ref={inputRef}
-      {...mergedInputProps}
-    />
-    <Combobox.Trigger class="caret" aria-label="Open item list"
-      >▾</Combobox.Trigger
-    >
-  </div>
-  <Combobox.Portal>
-    <Combobox.Content class="options" {...contentProps}>
-      <Combobox.ScrollUpButton>
-        <CaretDoubleUpIcon />
-      </Combobox.ScrollUpButton>
-      <Combobox.Viewport class="p-1">
-        {#each filteredItems as item (item.value)}
-          <Combobox.Item
-            value={item.value}
-            label={item.label}
-            disabled={item.disabled}
-          >
-            {#snippet children({ selected })}
-              {@render itemRow(item)}
-              {#if selected}<span class="check" aria-hidden="true">✓</span>{/if}
-            {/snippet}
-          </Combobox.Item>
-        {:else}
-          <span> No results found </span>
-        {/each}
-      </Combobox.Viewport>
-      <Combobox.ScrollDownButton>
-        <CaretDoubleDownIcon />
-      </Combobox.ScrollDownButton>
-    </Combobox.Content>
-  </Combobox.Portal>
+	<div class="control">
+		{#if valueIcon}
+			{@render valueIcon(value)}
+		{/if}
+		<Combobox.Input
+			class="combobox-input"
+			bind:ref={inputRef}
+			{...mergedInputProps}
+		/>
+		<Combobox.Trigger class="caret" aria-label="Open item list"
+			>▾</Combobox.Trigger
+		>
+	</div>
+	<Combobox.Portal>
+		<Combobox.Content class="options" {...contentProps}>
+			<Combobox.ScrollUpButton>
+				<CaretDoubleUpIcon />
+			</Combobox.ScrollUpButton>
+			<Combobox.Viewport class="p-1">
+				{#each filteredItems as item (item.value)}
+					<Combobox.Item
+						value={item.value}
+						label={item.label}
+						disabled={item.disabled}
+					>
+						{#snippet children({ selected })}
+							{@render itemRow(item)}
+							{#if selected}<span class="check" aria-hidden="true"
+									>✓</span
+								>{/if}
+						{/snippet}
+					</Combobox.Item>
+				{:else}
+					<span> No results found </span>
+				{/each}
+			</Combobox.Viewport>
+			<Combobox.ScrollDownButton>
+				<CaretDoubleDownIcon />
+			</Combobox.ScrollDownButton>
+		</Combobox.Content>
+	</Combobox.Portal>
 </Combobox.Root>
 
 <style>
-  .control {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    width: 100%;
-  }
+	.control {
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+		width: 100%;
+	}
 
-  .control :global(.caret) {
-    flex-shrink: 0;
-    padding: 0;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    color: inherit;
-  }
+	.control :global(.caret) {
+		flex-shrink: 0;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: transparent;
+		color: inherit;
+	}
 
-  .check {
-    flex-shrink: 0;
-  }
+	.check {
+		flex-shrink: 0;
+	}
 
-  :global(.options) {
-    min-width: var(--bits-combobox-anchor-width);
-    max-height: 320px;
-    margin: 0;
-    padding: 6px;
-    background-color: var(--schema-default-bg);
-  }
+	:global(.options) {
+		min-width: var(--bits-combobox-anchor-width);
+		max-height: 320px;
+		margin: 0;
+		padding: 6px;
+		background-color: var(--schema-default-bg);
+	}
 
-  :global([data-highlighted]) {
-    background-color: rgba(127, 127, 127, 0.25);
-  }
+	:global(.options [data-highlighted]) {
+		background-color: rgba(127, 127, 127, 0.25);
+	}
 
-  :global(.combobox-input) {
-    all: unset;
-  }
+	:global(.combobox-input) {
+		all: unset;
+	}
 </style>

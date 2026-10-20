@@ -20,14 +20,12 @@
 </script>
 
 <article class="card" data-category={category}>
-	<header>
-		<button
-			type="button"
-			class="remove"
-			aria-label="Remove entity"
-			onclick={onremove}>×</button
-		>
-	</header>
+	<button
+		type="button"
+		class="remove"
+		aria-label="Remove entity"
+		onclick={onremove}>×</button
+	>
 
 	<EntityEditor bind:card {schemata} />
 </article>
@@ -38,34 +36,17 @@
 		flex-direction: column;
 		gap: 0.5em;
 		border-radius: 8px;
-		border-left: 4px solid var(--schema-default-fg);
 		background: #ffffff;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 		margin-inline: 0;
-		padding: 8px 16px;
+		padding: 16px;
+		position: relative;
 	}
 
-	.card[data-category='person'] {
-		border-left-color: var(--schema-person-fg);
-	}
-
-	.card[data-category='legalEntity'] {
-		border-left-color: var(--schema-legalentity-fg);
-	}
-
-	.card[data-category='document'] {
-		border-left-color: var(--schema-document-fg);
-	}
-
-	header {
-		display: flex;
-		align-items: center;
-		gap: 0.4em;
-	}
-
-	header :global(.schema-select) {
-		flex: 1;
-		min-width: 0;
+	button {
+		position: absolute;
+		top: 0px;
+		right: 5px;
 	}
 
 	.remove {
@@ -74,7 +55,6 @@
 		box-shadow: none;
 		border: none;
 		background: transparent;
-		color: var(--schema-person-fg);
 		font-size: 1.1em;
 		line-height: 1;
 	}

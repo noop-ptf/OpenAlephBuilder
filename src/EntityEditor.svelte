@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { Property, Schema } from '@opensanctions/followthemoney';
 	import { model } from './ftm';
 	import { getCardProperties, type CardState } from './entityCard';
