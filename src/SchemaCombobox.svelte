@@ -16,9 +16,12 @@
 		autofocus?: boolean;
 	} = $props();
 
-	const inputProps = autofocus
-		? { [createAttachmentKey()]: (node: HTMLInputElement) => node.focus() }
-		: undefined;
+	const inputProps = {
+		placeholder: 'What kind of Entity is this?',
+		[createAttachmentKey()]: (node: HTMLInputElement) => {
+			if (autofocus) node.focus();
+		},
+	};
 
 	const schemaItems = $derived(
 		schemata.map((s) => ({ schema: s, value: s.name, label: s.label })),
