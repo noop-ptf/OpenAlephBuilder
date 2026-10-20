@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { Dialog, type WithoutChild } from "bits-ui";
-  import XIcon from "phosphor-svelte/lib/XIcon";
+  import { lucideIcon } from "./lucideIcon";
 
   type Props = Dialog.RootProps & {
     buttonText: string;
@@ -27,43 +27,74 @@
     {buttonText}
   </Dialog.Trigger>
   <Dialog.Portal>
-    <Dialog.Overlay class="dialog-overlay" />
-    <Dialog.Content class="dialog-content" {...contentProps}>
-      <Dialog.Title>
+    <Dialog.Overlay class="oab-dialog-overlay" />
+    <Dialog.Content class="oab-dialog-content" {...contentProps}>
+      <Dialog.Title class="oab-dialog-title">
         {@render title()}
       </Dialog.Title>
-      <Dialog.Description>
+      <Dialog.Description class="oab-dialog-description">
         {@render description()}
       </Dialog.Description>
       {@render children?.()}
-      <Dialog.Close class="dialog-close"><XIcon /></Dialog.Close>
+      <Dialog.Close>
+        {#snippet child({ props })}
+          <button
+            {...props}
+            class="clickable-icon oab-dialog-close"
+            aria-label="Close"
+            {@attach lucideIcon("x")}
+          ></button>
+        {/snippet}
+      </Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
 
 <style>
-  :global(.dialog-overlay) {
+  /* Values mirror Obsidian's native .modal-bg / .modal so the dialog follows
+     the active theme. Fallbacks cover themes that don't set the modal vars. */
+  :global(.oab-dialog-overlay) {
     position: fixed;
     inset: 0;
-    background: rgba(30, 30, 28, 0.34);
+    z-index: var(--layer-modal);
+    background-color: var(--background-modifier-cover);
   }
 
-  :global(.dialog-content) {
+  :global(.oab-dialog-content) {
     position: fixed;
     inset: 0;
+    z-index: var(--layer-modal);
     margin: auto;
-    width: 60%;
+    width: min(60%, 700px);
     height: fit-content;
     max-height: 80%;
-    background: white;
-    padding: 16px;
-    border-radius: 8px;
     display: flex;
     flex-direction: column;
+    gap: var(--size-4-2);
+    padding: var(--size-4-4);
+    background-color: var(--modal-background, var(--background-primary));
+    border: var(--modal-border-width, 1px) solid
+      var(--modal-border-color, var(--background-modifier-border));
+    border-radius: var(--modal-radius, var(--radius-l));
+    box-shadow: var(--shadow-l);
   }
-  :global(.dialog-close) {
+
+  :global(.oab-dialog-title) {
+    margin: 0;
+    padding-right: var(--size-4-8); /* keep clear of the close button */
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+  }
+
+  :global(.oab-dialog-description) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+  }
+
+  :global(.oab-dialog-close) {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: var(--size-4-2);
+    right: var(--size-4-2);
   }
 </style>
