@@ -3,6 +3,7 @@
   import type { AddedProperty } from "./entityCard";
   import { syncProperty } from "./entityCard";
   import PropertyField from "./PropertyField.svelte";
+  import { lucideIcon } from "./lucideIcon";
 
   let {
     entity,
@@ -24,13 +25,18 @@
 
 <div class="added-field">
   <PropertyField property={ap.property} {required} bind:values={ap.values} />
-  <button type="button" class="field-remove" onclick={onremove}
-    >Remove field</button
-  >
+  <button
+    type="button"
+    class="clickable-icon field-remove"
+    aria-label="Remove field"
+    onclick={onremove}
+    {@attach lucideIcon("circle-minus")}
+  ></button>
 </div>
 
 <style>
   .added-field {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.2em;
@@ -50,10 +56,11 @@
     box-sizing: border-box;
   }
 
+  /* Sits on the legend's line, which only uses the left side. */
   .field-remove {
-    align-self: flex-start;
-    font-size: 0.75em;
-    padding: 0.2em 0.5em;
-    box-shadow: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: var(--size-2-1);
   }
 </style>
