@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Notice } from 'obsidian';
 	import type { Schema } from '@opensanctions/followthemoney';
 	import { listEntitySchemata } from './ftm';
 	import { createCardState, type CardState } from './entityCard';
@@ -43,6 +44,9 @@
 			.map((card) => card.entity)
 			.filter((entity) => entity !== undefined);
 		if (selectedCollection) {
+			new Notice(
+				`Posting ${entities.length} Entities to ${selectedCollection.label}`,
+			);
 			bulkEntityUpload(entities, selectedCollection);
 		}
 	}
@@ -77,9 +81,15 @@
 	</button>
 </div>
 <h3>Upload/Export</h3>
-<button onclick={postEntitiesToSelectedCollection}
-	>Post to collection {selectedCollection?.id}</button
->
+{#if !selectedCollection}
+	<p>Select a collection to upload Entities</p>
+{:else if cards.length === 0}
+	<p>Create an Entity to upload</p>
+{:else}
+	<button onclick={postEntitiesToSelectedCollection}
+		>Post Entities to selected collection</button
+	>
+{/if}
 
 <style>
 	.entities {

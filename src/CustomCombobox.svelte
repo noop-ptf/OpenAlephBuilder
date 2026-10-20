@@ -179,5 +179,7 @@ side, the component will still be type-checked correctly.
 
 	:global(.combobox-input) {
 		all: unset;
+		flex: 1;
+		min-width: 0;
 	}
 </style>
