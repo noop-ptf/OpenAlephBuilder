@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Property, Schema } from '@opensanctions/followthemoney';
 	import { model } from './ftm';
 	import { getCardProperties, type CardState } from './entityCard';
@@ -51,16 +50,13 @@
 			card.addedProps.push({ property: prop, values: [] });
 		}
 	}
-
-	function focusOnMount(node: HTMLInputElement, shouldFocus: boolean) {
-		if (shouldFocus) node.focus();
-	}
 </script>
 
 <SchemaCombobox
 	selectedSchema={card.entity?.schema.name}
 	{schemata}
 	{handleSchemaChange}
+	autofocus={card.autofocus}
 />
 
 {#if card.entity}
