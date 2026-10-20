@@ -29,7 +29,9 @@
 
 <style>
   .group {
-    border-bottom: 1px solid #eceae5;
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
     text-transform: uppercase;
   }
   ul {
@@ -40,24 +42,32 @@
   }
   li {
     list-style: none;
-    border-radius: 4px;
   }
-  button {
+  /* Undo Obsidian's global button styles (fixed height, single line, shadow)
+     so long descriptions wrap instead of widening the list. */
+  li button {
     display: block;
     width: 100%;
-    padding: 8px;
+    height: auto;
+    padding: var(--size-4-2);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-s);
     background: none;
+    box-shadow: none;
     text-align: left;
-    cursor: pointer;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
-  button:hover {
-    background-color: #f6f5f2;
-    border-radius: 4px;
+  li button:hover,
+  li button:focus-visible {
+    background-color: var(--background-modifier-hover);
   }
   .label,
   .description {
     display: block;
+  }
+  .description {
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
   }
 </style>
