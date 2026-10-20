@@ -356,7 +356,9 @@ export async function getCollections(
 			// TODO: consolidate collections from more than one instance
 			result = result.concat(collections);
 		} catch {
-			console.log('ERROR');
+			new Notice(
+				`Failed to fetch collection from ${enabledInstance.name}`,
+			);
 		}
 	}
 	return result;
@@ -371,9 +373,7 @@ export async function bulkEntityUpload(
 	const instance = settings.instances.find(
 		(instance) => instance.id === collection.instanceId,
 	);
-	console.log('bEU - instance?');
 	if (!instance) return;
-	console.log('bEU - instance!');
 	const apiKey = app.secretStorage.getSecret(instance.apiKeyName);
 	if (!apiKey || apiKey.trim() === '') {
 		throw new Error(`API key for ${instance.instanceUrl} is empty.`);
@@ -395,5 +395,6 @@ export async function bulkEntityUpload(
 		headers,
 		body: JSON.stringify(entities),
 	});
-	console.log(res);
+	const status = res.status === 204 ? 'success' : 'failure';
+	new Notice(`Entity Upload Status: ${status}`);
 }
