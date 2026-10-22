@@ -69,9 +69,9 @@
 			</select>
 			<button
 				class="clickable-icon"
-				aria-label="Reload collections"
+				aria-label="Refresh collections"
 				onclick={refreshWithFeedback}
-				{@attach lucideIcon('list-restart')}
+				{@attach lucideIcon('refresh-cw')}
 			></button>
 		{/if}
 	{/if}
