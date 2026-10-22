@@ -3,8 +3,7 @@
 	generics="T extends { value: string; label: string; disabled?: boolean }"
 >
 	import { Combobox, type WithoutChildrenOrChild, mergeProps } from 'bits-ui';
-	import CaretDoubleUpIcon from 'phosphor-svelte/lib/CaretDoubleUpIcon';
-	import CaretDoubleDownIcon from 'phosphor-svelte/lib/CaretDoubleDownIcon';
+	import { lucideIcon } from './lucideIcon';
 	import { fuzzyFilter } from './fuzzy';
 	import type { Snippet } from 'svelte';
 
@@ -24,7 +23,7 @@
 	let {
 		items = [],
 		value = $bindable(),
-		open = $bindable(false),
+		open = $bindable(true),
 		inputProps,
 		contentProps,
 		itemRow,
@@ -76,6 +75,10 @@
 		e.currentTarget.select();
 	}
 
+	function handleInputClick() {
+		open = !open;
+	}
+
 	const mergedRootProps = $derived(
 		mergeProps(restProps, {
 			onOpenChangeComplete: handleOpenChangeComplete,
@@ -85,6 +88,7 @@
 		mergeProps(inputProps, {
 			oninput: handleInput,
 			onfocus: handleInputFocus,
+			onclick: handleInputClick,
 		}),
 	);
 </script>
@@ -110,14 +114,11 @@ side, the component will still be type-checked correctly.
 			bind:ref={inputRef}
 			{...mergedInputProps}
 		/>
-		<Combobox.Trigger class="caret" aria-label="Open item list"
-			>▾</Combobox.Trigger
-		>
 	</div>
 	<Combobox.Portal>
 		<Combobox.Content class="options" {...contentProps}>
 			<Combobox.ScrollUpButton>
-				<CaretDoubleUpIcon />
+				<span {@attach lucideIcon('chevrons-up')}></span>
 			</Combobox.ScrollUpButton>
 			<Combobox.Viewport class="p-1">
 				{#each filteredItems as item (item.value)}
@@ -138,7 +139,7 @@ side, the component will still be type-checked correctly.
 				{/each}
 			</Combobox.Viewport>
 			<Combobox.ScrollDownButton>
-				<CaretDoubleDownIcon />
+				<span {@attach lucideIcon('chevrons-down')}></span>
 			</Combobox.ScrollDownButton>
 		</Combobox.Content>
 	</Combobox.Portal>
