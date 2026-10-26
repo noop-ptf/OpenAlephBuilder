@@ -25,7 +25,7 @@
 		validateEntityUpload: (
 			entities: Entity[],
 			collection: OpenAlephCollection,
-		) => void;
+		) => Promise<string | undefined>;
 		getInstanceSettings: (id: string) => OpenAlephInstanceSettings;
 	} = $props();
 	const schemata: Schema[] = listEntitySchemata();
@@ -54,14 +54,21 @@
 			);
 			bulkEntityUpload(entities, selectedCollection);
 		}
+		// Reset report, as upload changes validation result
+		validationReport = undefined;
 	}
-	function validateUploadSelectedCollection() {
+
+	let validationReport = $state();
+	async function validateUploadSelectedCollection() {
 		let entities = cards
 			.map((card) => card.entity)
 			.filter((entity) => entity !== undefined);
 		if (selectedCollection) {
 			new Notice(`Verifying entities in ${selectedCollection.label}`);
-			validateEntityUpload(entities, selectedCollection);
+			validationReport = await validateEntityUpload(
+				entities,
+				selectedCollection,
+			);
 		}
 	}
 </script>
@@ -105,6 +112,9 @@
 		{cards.length == 1 ? 'entity' : 'entities'} to OpenAleph</button
 	>
 	<button onclick={validateUploadSelectedCollection}>Verify upload</button>
+	{#if validationReport}
+		<pre class="report">{validationReport}</pre>
+	{/if}
 {/if}
 
 <style>
@@ -140,5 +150,11 @@
 	.card.ghost .plus {
 		font-size: 1.8em;
 		line-height: 1;
+	}
+	.report {
+		white-space: pre-wrap; /* keep newlines and indentation, but wrap long lines */
+		overflow-wrap: anywhere; /* break very long tokens like IDs or URLs */
+		max-width: 100%;
+		margin: 16px;
 	}
 </style>

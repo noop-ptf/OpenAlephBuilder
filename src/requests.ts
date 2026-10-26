@@ -446,7 +446,7 @@ export async function validateEntityUpload(
 	app: App,
 	entities: Entity[],
 	collection: OpenAlephCollection,
-) {
+): Promise<string | undefined> {
 	const instance = settings.instances.find(
 		(instance) => instance.id === collection.instanceId,
 	);
@@ -496,22 +496,32 @@ export async function validateEntityUpload(
 		}
 	}
 
+	let report = '';
 	// Local entities the server didn't return at all
 	const notFoundOnline = [...entityById.keys()].filter((id) => !seen.has(id));
+	if (notFoundOnline.length > 0) {
+		report += 'Entities not found on OpenAleph:\n';
+		notFoundOnline.forEach(
+			(key) => (report += `- ${key}:${entityById.get(key)?.caption}\n`),
+		);
+	}
 
+	report += '';
 	for (const d of results) {
-		console.log(`${d.caption}:`);
+		report += `${d.caption}:\n`;
 		for (const p of d.properties) {
 			if (p.missing.length > 0) {
-				console.log(
-					`  ${p.property}: missing ${JSON.stringify(p.missing)}`,
-				);
+				report += `  ${p.property}: missing ${JSON.stringify(p.missing)}\n`;
 			}
 			if (p.added.length > 0) {
-				console.log(
-					`  ${p.property}: added ${JSON.stringify(p.added)}`,
-				);
+				report += `  ${p.property}: added ${JSON.stringify(p.added)}\n`;
 			}
 		}
 	}
+
+	if (report === '') {
+		report = 'No issues found, everything was uploaded as expected.';
+	}
+
+	return report;
 }

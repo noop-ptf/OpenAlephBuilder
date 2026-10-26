@@ -107,8 +107,8 @@ export default class OpenAlephPlugin extends Plugin {
 	async validateEntityUpload(
 		entities: Entity[],
 		collection: OpenAlephCollection,
-	) {
-		await validateEntityUpload(
+	): Promise<string | undefined> {
+		return await validateEntityUpload(
 			this.settings,
 			this.app,
 			entities,
