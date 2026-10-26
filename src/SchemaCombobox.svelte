@@ -17,7 +17,7 @@
 	} = $props();
 
 	const inputProps = {
-		placeholder: 'What kind of Entity is this?',
+		placeholder: 'What kind of entity is this?',
 		[createAttachmentKey()]: (node: HTMLInputElement) => {
 			if (autofocus) node.focus();
 		},

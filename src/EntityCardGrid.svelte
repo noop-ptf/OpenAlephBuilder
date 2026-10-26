@@ -53,14 +53,7 @@
 </script>
 
 <h2>Open Aleph FtM Builder</h2>
-<h3>Target Collection</h3>
-<p>Where do you want to create Follow the Money Entities?</p>
-<CollectionSelector
-	{loadCollections}
-	{getInstanceSettings}
-	bind:selectedCollection
-/>
-<h3>Entities</h3>
+<h3>Create entities</h3>
 <div class="entities">
 	{#each cards as card, index (card.key)}
 		<EntityCard
@@ -80,14 +73,22 @@
 		<span>Add entity</span>
 	</button>
 </div>
+<h3>Select a collection</h3>
+<p>Where do you want to create Follow the Money entities?</p>
+<CollectionSelector
+	{loadCollections}
+	{getInstanceSettings}
+	bind:selectedCollection
+/>
 <h3>Upload/Export</h3>
 {#if !selectedCollection}
-	<p>Select a collection to upload Entities</p>
+	<p>Select a collection to upload entities</p>
 {:else if cards.length === 0}
-	<p>Create an Entity to upload</p>
+	<p>Create an entity to upload</p>
 {:else}
 	<button onclick={postEntitiesToSelectedCollection}
-		>Post Entities to selected collection</button
+		>Upload {cards.length}
+		{cards.length == 1 ? 'entity' : 'entities'} to OpenAleph</button
 	>
 {/if}
 
