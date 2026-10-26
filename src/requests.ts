@@ -401,6 +401,46 @@ export async function bulkEntityUpload(
 	new Notice(`Entity Upload Status: ${status}`);
 }
 
+interface PropertyDiff {
+	property: string;
+	missing: string[]; // local values not found online
+	added: string[]; // values online, not found locally
+}
+
+interface EntityDiff {
+	id: string;
+	caption: string | null;
+	properties: PropertyDiff[];
+}
+
+// Entity-typed properties may hold Entity objects rather than strings,
+// so reduce every value to a comparable string key.
+function valueKey(value: unknown): string {
+	return typeof value === 'string' ? value : (value as Entity).id;
+}
+
+function diffEntity(local: Entity, remote: Entity): PropertyDiff[] {
+	const diffs: PropertyDiff[] = [];
+	for (const prop of local.getProperties()) {
+		const remoteValues = new Set(
+			remote.getProperty(prop.name).map(valueKey),
+		);
+		const localValues = new Set(local.getProperty(prop.name).map(valueKey));
+		const missing = local
+			.getProperty(prop.name)
+			.map(valueKey)
+			.filter((v) => !remoteValues.has(v));
+		const added = remote
+			.getProperty(prop.name)
+			.map(valueKey)
+			.filter((v) => !localValues.has(v));
+		if (missing.length > 0 || added.length > 0) {
+			diffs.push({ property: prop.name, missing, added });
+		}
+	}
+	return diffs;
+}
+
 export async function verifyEntityUpload(
 	settings: OpenAlephPluginSettings,
 	app: App,
@@ -431,36 +471,47 @@ export async function verifyEntityUpload(
 		contentType: 'application/json',
 		headers,
 	});
-	let entityById: Map<string, Entity> = new Map();
-	entities.forEach((entity) => {
-		entityById.set(entity.id, entity);
-	});
 	const jsonRes = res.json as unknown as OpenAlephEntityApiResult;
-	jsonRes.results.forEach((raw) => {
-		const entity = model.getEntity(raw);
-		const [unsignedId] = entity.id.split('.');
-		if (unsignedId === undefined) {
-			return;
+
+	const entityById = new Map(entities.map((e) => [e.id, e]));
+	const seen = new Set<string>();
+	const results: EntityDiff[] = [];
+
+	for (const raw of jsonRes.results) {
+		const remote = model.getEntity(raw);
+		const [unsignedId] = remote.id.split('.');
+		if (unsignedId === undefined) continue;
+
+		const local = entityById.get(unsignedId);
+		if (local === undefined) continue;
+
+		seen.add(unsignedId);
+		const properties = diffEntity(local, remote);
+		if (properties.length > 0) {
+			results.push({
+				id: unsignedId,
+				caption: remote.caption,
+				properties,
+			});
 		}
-		const found = entityById.get(unsignedId);
-		if (found === undefined) {
-			return;
-		}
-		console.log(typeof entity);
-		console.log(entity.getCaption());
-		console.log(`Checking properties of ${entity.caption}`);
-		// Now compare each property and see which ones are missing online
-		found.getProperties().forEach((localProperty) => {
-			console.log(`checking ${localProperty.name}`);
-			const uploadedPropertyValues = entity.getProperty(
-				localProperty.name,
-			);
-			const localPropertyValues = found.getProperty(localProperty.name);
-			if (uploadedPropertyValues.length !== localPropertyValues.length) {
+	}
+
+	// Local entities the server didn't return at all
+	const notFoundOnline = [...entityById.keys()].filter((id) => !seen.has(id));
+
+	for (const d of results) {
+		console.log(`${d.caption}:`);
+		for (const p of d.properties) {
+			if (p.missing.length > 0) {
 				console.log(
-					`Couldn't validate ${localProperty.name} on ${entity.caption}`,
+					`  ${p.property}: missing ${JSON.stringify(p.missing)}`,
 				);
 			}
-		});
-	});
+			if (p.added.length > 0) {
+				console.log(
+					`  ${p.property}: added ${JSON.stringify(p.added)}`,
+				);
+			}
+		}
+	}
 }
