@@ -10,8 +10,10 @@ import type {
 	OpenAlephCollection,
 	OpenAlephCollectionApiResult,
 	OpenAlephInstanceSettings,
+	OpenAlephEntityApiResult,
 } from './types';
 import type { Entity } from '@opensanctions/followthemoney';
+import { model } from './ftm';
 
 const MAX_CLOSELY_CORRELATED_TERMS = 5;
 
@@ -397,4 +399,68 @@ export async function bulkEntityUpload(
 	});
 	const status = res.status === 204 ? 'success' : 'failure';
 	new Notice(`Entity Upload Status: ${status}`);
+}
+
+export async function verifyEntityUpload(
+	settings: OpenAlephPluginSettings,
+	app: App,
+	entities: Entity[],
+	collection: OpenAlephCollection,
+) {
+	const instance = settings.instances.find(
+		(instance) => instance.id === collection.instanceId,
+	);
+	if (!instance) return;
+	const apiKey = app.secretStorage.getSecret(instance.apiKeyName);
+	if (!apiKey || apiKey.trim() === '') {
+		throw new Error(`API key for ${instance.instanceUrl} is empty.`);
+	}
+	const headers: Record<string, string> = {
+		'User-Agent': 'alephclient',
+		Authorization: apiKey,
+		Pragma: 'no-cache',
+	};
+	const url = new URL('/api/2/entities', instance.instanceUrl);
+	url.searchParams.set('filter:dataset', collection.name);
+	// fetch "all at once" (for now)
+	url.searchParams.set('limit', '100000');
+
+	const res = await requestUrl({
+		url: url.toString(),
+		method: 'GET',
+		contentType: 'application/json',
+		headers,
+	});
+	let entityById: Map<string, Entity> = new Map();
+	entities.forEach((entity) => {
+		entityById.set(entity.id, entity);
+	});
+	const jsonRes = res.json as unknown as OpenAlephEntityApiResult;
+	jsonRes.results.forEach((raw) => {
+		const entity = model.getEntity(raw);
+		const [unsignedId] = entity.id.split('.');
+		if (unsignedId === undefined) {
+			return;
+		}
+		const found = entityById.get(unsignedId);
+		if (found === undefined) {
+			return;
+		}
+		console.log(typeof entity);
+		console.log(entity.getCaption());
+		console.log(`Checking properties of ${entity.caption}`);
+		// Now compare each property and see which ones are missing online
+		found.getProperties().forEach((localProperty) => {
+			console.log(`checking ${localProperty.name}`);
+			const uploadedPropertyValues = entity.getProperty(
+				localProperty.name,
+			);
+			const localPropertyValues = found.getProperty(localProperty.name);
+			if (uploadedPropertyValues.length !== localPropertyValues.length) {
+				console.log(
+					`Couldn't validate ${localProperty.name} on ${entity.caption}`,
+				);
+			}
+		});
+	});
 }

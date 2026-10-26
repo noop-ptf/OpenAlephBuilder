@@ -1,3 +1,5 @@
+import type { Entity } from '@opensanctions/followthemoney';
+
 export interface OpenAlephGraph {
 	centralNote: string;
 	relatedEntities?: OpenAlephEntity[];
@@ -35,6 +37,7 @@ export interface OpenAlephCloselyCorrelatedApiTerm {
 
 export interface OpenAlephCollection {
 	id: string;
+	name: string;
 	label: string;
 	writeable: boolean;
 	instanceId: string;
@@ -45,6 +48,12 @@ export interface OpenAlephCollectionApiResult {
 	status: string;
 	total: number;
 	results: Omit<OpenAlephCollection, 'instanceId'>[];
+}
+
+export interface OpenAlephEntityApiResult {
+	status: string;
+	total: number;
+	results: Entity[];
 }
 
 export interface OpenAlephPercolationApiResult {

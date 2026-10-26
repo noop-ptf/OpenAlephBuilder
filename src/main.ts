@@ -6,7 +6,11 @@ import type {
 	OpenAlephPluginSettings,
 } from './types';
 import { OpenAlephBuilderView, VIEW_TYPE_OPENALEPH_BUILDER } from './view';
-import { getCollections, bulkEntityUpload } from './requests';
+import {
+	getCollections,
+	bulkEntityUpload,
+	verifyEntityUpload,
+} from './requests';
 import type { Entity } from '@opensanctions/followthemoney';
 
 export interface ResizableSidebarSplit {
@@ -99,6 +103,12 @@ export default class OpenAlephPlugin extends Plugin {
 		collection: OpenAlephCollection,
 	) {
 		await bulkEntityUpload(this.settings, this.app, entities, collection);
+	}
+	async verifyEntityUpload(
+		entities: Entity[],
+		collection: OpenAlephCollection,
+	) {
+		await verifyEntityUpload(this.settings, this.app, entities, collection);
 	}
 
 	getInstanceSettings(id: string): OpenAlephInstanceSettings | undefined {

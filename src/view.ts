@@ -38,6 +38,10 @@ export class OpenAlephBuilderView extends ItemView {
 					entities: Entity[],
 					collection: OpenAlephCollection,
 				) => this.plugin.bulkEntityUpload(entities, collection),
+				verifyEntityUpload: (
+					entities: Entity[],
+					collection: OpenAlephCollection,
+				) => this.plugin.verifyEntityUpload(entities, collection),
 				getInstanceSettings: (id: string) =>
 					this.plugin.getInstanceSettings(id),
 			},

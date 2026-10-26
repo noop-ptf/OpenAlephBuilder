@@ -14,10 +14,15 @@
 	let {
 		loadCollections,
 		bulkEntityUpload,
+		verifyEntityUpload,
 		getInstanceSettings,
 	}: {
 		loadCollections: () => Promise<OpenAlephCollection[]>;
 		bulkEntityUpload: (
+			entities: Entity[],
+			collection: OpenAlephCollection,
+		) => void;
+		verifyEntityUpload: (
 			entities: Entity[],
 			collection: OpenAlephCollection,
 		) => void;
@@ -45,9 +50,18 @@
 			.filter((entity) => entity !== undefined);
 		if (selectedCollection) {
 			new Notice(
-				`Posting ${entities.length} Entities to ${selectedCollection.label}`,
+				`Posting ${entities.length} entities to ${selectedCollection.label}`,
 			);
 			bulkEntityUpload(entities, selectedCollection);
+		}
+	}
+	function verifyUploadSelectedCollection() {
+		let entities = cards
+			.map((card) => card.entity)
+			.filter((entity) => entity !== undefined);
+		if (selectedCollection) {
+			new Notice(`Verifying entities in ${selectedCollection.label}`);
+			verifyEntityUpload(entities, selectedCollection);
 		}
 	}
 </script>
@@ -90,6 +104,7 @@
 		>Upload {cards.length}
 		{cards.length == 1 ? 'entity' : 'entities'} to OpenAleph</button
 	>
+	<button onclick={verifyUploadSelectedCollection}>Verify upload</button>
 {/if}
 
 <style>
