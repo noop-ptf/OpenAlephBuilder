@@ -9,7 +9,7 @@ import { OpenAlephBuilderView, VIEW_TYPE_OPENALEPH_BUILDER } from './view';
 import {
 	getCollections,
 	bulkEntityUpload,
-	verifyEntityUpload,
+	validateEntityUpload,
 } from './requests';
 import type { Entity } from '@opensanctions/followthemoney';
 
@@ -104,11 +104,16 @@ export default class OpenAlephPlugin extends Plugin {
 	) {
 		await bulkEntityUpload(this.settings, this.app, entities, collection);
 	}
-	async verifyEntityUpload(
+	async validateEntityUpload(
 		entities: Entity[],
 		collection: OpenAlephCollection,
 	) {
-		await verifyEntityUpload(this.settings, this.app, entities, collection);
+		await validateEntityUpload(
+			this.settings,
+			this.app,
+			entities,
+			collection,
+		);
 	}
 
 	getInstanceSettings(id: string): OpenAlephInstanceSettings | undefined {

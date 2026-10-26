@@ -441,7 +441,7 @@ function diffEntity(local: Entity, remote: Entity): PropertyDiff[] {
 	return diffs;
 }
 
-export async function verifyEntityUpload(
+export async function validateEntityUpload(
 	settings: OpenAlephPluginSettings,
 	app: App,
 	entities: Entity[],
