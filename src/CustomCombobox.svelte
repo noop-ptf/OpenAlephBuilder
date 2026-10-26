@@ -116,7 +116,8 @@ side, the component will still be type-checked correctly.
 		/>
 	</div>
 	<Combobox.Portal>
-		<Combobox.Content class="options" {...contentProps}>
+		<!-- align="start" is an option to influence the Floating UI placement. -->
+		<Combobox.Content class="options" align="start" {...contentProps}>
 			<Combobox.ScrollUpButton>
 				<span {@attach lucideIcon('chevrons-up')}></span>
 			</Combobox.ScrollUpButton>
@@ -166,9 +167,13 @@ side, the component will still be type-checked correctly.
 		flex-shrink: 0;
 	}
 
+	/* Variables documented in https://bits-ui.com/docs/components/combobox#content */
 	:global(.options) {
+		width: var(--bits-combobox-anchor-width);
 		min-width: var(--bits-combobox-anchor-width);
+		max-width: var(--bits-combobox-content-available-width);
 		max-height: 320px;
+		box-sizing: border-box;
 		margin: 0;
 		padding: 6px;
 		background-color: var(--schema-default-bg);
