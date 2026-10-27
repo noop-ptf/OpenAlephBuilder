@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Notice } from 'obsidian';
+	import { lucideIcon } from './lucideIcon';
 	import type { Schema } from '@opensanctions/followthemoney';
 	import { listEntitySchemata } from './ftm';
 	import { createCardState, type CardState } from './entityCard';
@@ -73,8 +74,7 @@
 	}
 </script>
 
-<h2>Open Aleph FtM Builder</h2>
-<h3>Create entities</h3>
+<h3>Entities</h3>
 <div class="entities">
 	{#each cards as card, index (card.key)}
 		<EntityCard
@@ -94,14 +94,25 @@
 		<span>Add entity</span>
 	</button>
 </div>
-<h3>Select a collection</h3>
-<p>Where do you want to create Follow the Money entities?</p>
+<h3>
+	Investigation<span
+		class="info-hover"
+		aria-label="Select to which OpenAleph investigation the entities will go"
+		{@attach lucideIcon('info')}
+	></span>
+</h3>
 <CollectionSelector
 	{loadCollections}
 	{getInstanceSettings}
 	bind:selectedCollection
 />
-<h3>Upload/Export</h3>
+<h3>
+	Save or Upload<span
+		class="info-hover"
+		aria-label="Save the entities to your vault (TODO: implement) or upload them to OpenAleph"
+		{@attach lucideIcon('info')}
+	></span>
+</h3>
 {#if !selectedCollection}
 	<p>Select a collection to upload entities</p>
 {:else if cards.length === 0}
@@ -156,5 +167,9 @@
 		overflow-wrap: anywhere; /* break very long tokens like IDs or URLs */
 		max-width: 100%;
 		margin: 16px;
+	}
+	.info-hover {
+		padding-left: 8px;
+		color: var(--icon-color);
 	}
 </style>
