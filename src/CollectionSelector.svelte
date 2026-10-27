@@ -80,6 +80,7 @@
 <style>
 	.wrapper {
 		display: flex;
+		gap: 12px;
 	}
 	.select {
 		flex-grow: 1;
