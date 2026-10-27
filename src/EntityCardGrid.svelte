@@ -129,6 +129,9 @@
 {/if}
 
 <style>
+	h3:not(:first-child) {
+		margin-top: 48px;
+	}
 	.entities {
 		display: flex;
 		flex-direction: column;
