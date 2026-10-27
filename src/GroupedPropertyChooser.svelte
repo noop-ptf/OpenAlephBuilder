@@ -1,73 +1,77 @@
 <script
-  lang="ts"
-  generics="T extends { name: string; label: string; description: string | null }"
+	lang="ts"
+	generics="T extends { name: string; label: string; description: string | null }"
 >
-  type Props = {
-    groupedItems: { [key: string]: T[] };
-    groupLabels: { [key: string]: string };
-    itemClickHandler: (item: T) => void;
-  };
-  let { groupedItems, groupLabels, itemClickHandler }: Props = $props();
-  $inspect(groupedItems);
+	type Props = {
+		groupedItems: { [key: string]: T[] };
+		groupLabels: { [key: string]: string };
+		groupOrder: string[];
+		itemClickHandler: (item: T) => void;
+	};
+	let { groupedItems, groupLabels, groupOrder, itemClickHandler }: Props =
+		$props();
+	$inspect(groupedItems);
 
-  // TODO: take JS/CSS code from
+	// TODO: take JS/CSS code from
 </script>
 
-{#each Object.keys(groupedItems) as group (group)}
-  <div class="group">{groupLabels[group] || group}</div>
-  <ul>
-    {#each groupedItems[group] as item (item.name)}
-      <li>
-        <button onclick={() => itemClickHandler(item)}>
-          <span class="label">{item.label}</span>
-          <span class="description">{item.description}</span>
-        </button>
-      </li>
-    {/each}
-  </ul>
+{#each groupOrder as group (group)}
+	{#if groupedItems[group]?.length}
+		<div class="group">{groupLabels[group] || group}</div>
+		<ul>
+			{#each groupedItems[group] as item (item.name)}
+				<li>
+					<button onclick={() => itemClickHandler(item)}>
+						<span class="label">{item.label}</span>
+						<span class="description">{item.description}</span>
+					</button>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 {/each}
 
 <style>
-  .group {
-    border-bottom: 1px solid var(--background-modifier-border);
-    color: var(--text-muted);
-    font-size: var(--font-ui-smaller);
-    text-transform: uppercase;
-  }
-  ul {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    align-items: stretch;
-  }
-  li {
-    list-style: none;
-  }
-  /* Undo Obsidian's global button styles (fixed height, single line, shadow)
+	.group {
+		border-bottom: 1px solid var(--background-modifier-border);
+		color: var(--text-muted);
+		font-size: var(--font-ui-smaller);
+		text-transform: uppercase;
+	}
+	ul {
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+		align-items: stretch;
+	}
+	li {
+		list-style: none;
+	}
+	/* Undo Obsidian's global button styles (fixed height, single line, shadow)
      so long descriptions wrap instead of widening the list. */
-  li button {
-    display: block;
-    width: 100%;
-    height: auto;
-    padding: var(--size-4-2);
-    border: none;
-    border-radius: var(--radius-s);
-    background: none;
-    box-shadow: none;
-    text-align: left;
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-  li button:hover,
-  li button:focus-visible {
-    background-color: var(--background-modifier-hover);
-  }
-  .label,
-  .description {
-    display: block;
-  }
-  .description {
-    color: var(--text-muted);
-    font-size: var(--font-ui-small);
-  }
+	li button {
+		display: block;
+		width: 100%;
+		height: auto;
+		padding: var(--size-4-2);
+		border: none;
+		border-radius: var(--radius-s);
+		background: none;
+		box-shadow: none;
+		text-align: left;
+		white-space: normal;
+		overflow-wrap: anywhere;
+	}
+	li button:hover,
+	li button:focus-visible {
+		background-color: var(--background-modifier-hover);
+	}
+	.label,
+	.description {
+		display: block;
+	}
+	.description {
+		color: var(--text-muted);
+		font-size: var(--font-ui-small);
+	}
 </style>

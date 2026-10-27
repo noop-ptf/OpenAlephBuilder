@@ -44,6 +44,7 @@
 		<GroupedPropertyChooser
 			groupedItems={filteredGroups}
 			groupLabels={FIELD_GROUPS.labels}
+			groupOrder={FIELD_GROUPS.order}
 			itemClickHandler={(p) => {
 				onSelectProperty(p);
 				open = false;
