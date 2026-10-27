@@ -1,5 +1,6 @@
 # obsidian
 main.js
+*.zip
 
 # vscode
 .vscode 

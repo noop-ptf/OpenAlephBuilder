@@ -7,6 +7,7 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"export": "npm run build && mkdir -p OpenAlephBuilder && cp main.js manifest.json styles.css OpenAlephBuilder && zip -r OpenAlephBuilder OpenAlephBuilder && rm -r OpenAlephBuilder",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"lint": "eslint .",
 		"svelte-check": "svelte-check --tsconfig tsconfig.json"
