@@ -369,7 +369,7 @@ export function getGroupedProperty(entitySchema?: Schema): {
 	entitySchema?.getEditableProperties().forEach((p) => {
 		const group: string = isPropertyGroup(p.name)
 			? FIELD_GROUPS.byProp[p.name]
-			: 'rest';
+			: 'other';
 		if (grouped[group] === undefined) {
 			grouped[group] = [];
 		}

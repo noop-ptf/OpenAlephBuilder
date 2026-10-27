@@ -3,8 +3,13 @@
 	import GroupedPropertyChooser from './GroupedPropertyChooser.svelte';
 	import { getGroupedProperty, FIELD_GROUPS } from './ftm';
 	import { fuzzyFilter } from './fuzzy';
+	import type { Property, Schema } from '@opensanctions/followthemoney';
 
-	let { schema, onSelectProperty } = $props();
+	let {
+		schema,
+		onSelectProperty,
+	}: { schema: Schema; onSelectProperty: (prop: Property) => void } =
+		$props();
 
 	const groupedProperties = $derived(getGroupedProperty(schema));
 	let open = $state(false);
@@ -20,6 +25,18 @@
 				.filter(([, props]) => props.length > 0),
 		),
 	);
+	// Replace the "Type-specific Details" by their name, if we have one for it
+	const groupLabels = $derived.by(() => {
+		const specificLabel =
+			FIELD_GROUPS.specificLabel[
+				schema.name as keyof typeof FIELD_GROUPS.specificLabel
+			];
+		if (specificLabel !== undefined) {
+			return { ...FIELD_GROUPS.labels, specific: specificLabel };
+		} else {
+			return FIELD_GROUPS.labels;
+		}
+	});
 </script>
 
 <Dialog
@@ -43,7 +60,7 @@
 	<div class="scroll">
 		<GroupedPropertyChooser
 			groupedItems={filteredGroups}
-			groupLabels={FIELD_GROUPS.labels}
+			{groupLabels}
 			groupOrder={FIELD_GROUPS.order}
 			itemClickHandler={(p) => {
 				onSelectProperty(p);
