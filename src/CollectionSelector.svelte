@@ -69,7 +69,7 @@
 			</select>
 			<button
 				class="clickable-icon"
-				aria-label="Refresh collections"
+				aria-label="Refresh investigations"
 				onclick={refreshWithFeedback}
 				{@attach lucideIcon('refresh-cw')}
 			></button>

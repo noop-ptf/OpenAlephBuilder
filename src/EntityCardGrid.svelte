@@ -114,7 +114,7 @@
 	></span>
 </h3>
 {#if !selectedCollection}
-	<p>Select a collection to upload entities</p>
+	<p>Select an investigation to upload entities</p>
 {:else if cards.length === 0}
 	<p>Create an entity to upload</p>
 {:else}
