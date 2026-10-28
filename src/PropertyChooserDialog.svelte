@@ -7,11 +7,17 @@
 
 	let {
 		schema,
+		addedProperties,
 		onSelectProperty,
-	}: { schema: Schema; onSelectProperty: (prop: Property) => void } =
-		$props();
+	}: {
+		schema: Schema;
+		addedProperties: Set<Property>;
+		onSelectProperty: (prop: Property) => void;
+	} = $props();
 
-	const groupedProperties = $derived(getGroupedProperty(schema));
+	const groupedProperties = $derived(
+		getGroupedProperty(schema, addedProperties),
+	);
 	let open = $state(false);
 	let filterInput = $state<HTMLInputElement>();
 	let searchValue = $state('');

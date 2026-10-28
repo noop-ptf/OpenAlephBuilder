@@ -71,6 +71,7 @@
 	{#if availableOthers.length > 0}
 		<PropertyChooserDialog
 			schema={card.entity.schema}
+			addedProperties={new Set(card.addedProps.map((ap) => ap.property))}
 			onSelectProperty={toggleProp}
 		/>
 	{/if}

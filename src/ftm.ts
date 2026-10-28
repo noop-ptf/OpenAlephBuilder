@@ -361,12 +361,16 @@ function isPropertyGroup(key: string): key is PropertyGroup {
 	return key in FIELD_GROUPS.byProp;
 }
 
-export function getGroupedProperty(entitySchema?: Schema): {
+export function getGroupedProperty(
+	entitySchema?: Schema,
+	filter?: Set<Property>,
+): {
 	[key: string]: Property[];
 } {
 	let grouped: { [key: string]: Property[] } = {};
 
 	entitySchema?.getEditableProperties().forEach((p) => {
+		if (filter?.has(p)) return;
 		const group: string = isPropertyGroup(p.name)
 			? FIELD_GROUPS.byProp[p.name]
 			: 'other';
