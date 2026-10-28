@@ -46,9 +46,9 @@
 		{#if $collections.data.length === 0}
 			<div class="error">
 				<p>
-					No investigations found. Configure an instance in the
-					settings where you have an investigation with write
-					permissions.
+					No investigations found. Open Settings and connect to an
+					OpenAleph instance where you have an investigation you can
+					edit / add entities to.
 				</p>
 				<button onclick={openPluginSettings}>Open Settings</button>
 				<button onclick={refreshWithFeedback}>Retry</button>
