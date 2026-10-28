@@ -1,4 +1,10 @@
-import { Plugin, Notice, WorkspaceLeaf } from 'obsidian';
+import {
+	Plugin,
+	Notice,
+	WorkspaceLeaf,
+	PluginSettingTab,
+	type App,
+} from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
 import type {
 	OpenAlephCollection,
@@ -60,6 +66,25 @@ export default class OpenAlephPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			(await this.loadData()) as Partial<OpenAlephPluginSettings>,
 		);
+	}
+
+	openPluginSettings(): void {
+		// This interface is not officially supported by Obsidian, so we have to
+		// manually declare it here, to make TypeScript happy.
+		interface AppWithSetting extends App {
+			setting?: {
+				open(): void;
+				openTabById(id: string): void;
+			};
+		}
+
+		const setting = (this.app as Partial<AppWithSetting>).setting;
+		if (setting) {
+			setting.open();
+			setting.openTabById(this.manifest.id);
+		} else {
+			new Notice('Open Settings manually: Ctrl/Cmd + ,');
+		}
 	}
 
 	async activateView(): Promise<void> {

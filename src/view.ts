@@ -44,6 +44,7 @@ export class OpenAlephBuilderView extends ItemView {
 				) => this.plugin.validateEntityUpload(entities, collection),
 				getInstanceSettings: (id: string) =>
 					this.plugin.getInstanceSettings(id),
+				openPluginSettings: () => this.plugin.openPluginSettings(),
 			},
 		});
 	}

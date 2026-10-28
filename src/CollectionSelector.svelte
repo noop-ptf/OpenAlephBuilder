@@ -11,11 +11,13 @@
 	type Props = {
 		loadCollections: () => Promise<OpenAlephCollection[]>;
 		getInstanceSettings: (id: string) => OpenAlephInstanceSettings;
+		openPluginSettings: () => void;
 		selectedCollection: OpenAlephCollection | null;
 	};
 	let {
 		loadCollections,
 		getInstanceSettings,
+		openPluginSettings,
 		selectedCollection = $bindable(null),
 	}: Props = $props();
 
@@ -42,11 +44,15 @@
 		</p>
 	{:else if $collections.data}
 		{#if $collections.data.length === 0}
-			<p>
-				No collections found. Configure an instance in the settings
-				where you have a dataset/investigation with write permissions.
+			<div class="error">
+				<p>
+					No investigations found. Configure an instance in the
+					settings where you have an investigation with write
+					permissions.
+				</p>
+				<button onclick={openPluginSettings}>Open Settings</button>
 				<button onclick={refreshWithFeedback}>Retry</button>
-			</p>
+			</div>
 		{:else}
 			<select
 				class:stale={$collections.status === 'loading'}
@@ -84,5 +90,10 @@
 	}
 	.select {
 		flex-grow: 1;
+	}
+	.error {
+		border-radius: 8px;
+		border: 1px solid var(--color-red);
+		padding: 8px 16px 16px 16px;
 	}
 </style>

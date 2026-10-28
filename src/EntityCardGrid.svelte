@@ -17,6 +17,7 @@
 		bulkEntityUpload,
 		validateEntityUpload,
 		getInstanceSettings,
+		openPluginSettings,
 	}: {
 		loadCollections: () => Promise<OpenAlephCollection[]>;
 		bulkEntityUpload: (
@@ -28,6 +29,7 @@
 			collection: OpenAlephCollection,
 		) => Promise<string | undefined>;
 		getInstanceSettings: (id: string) => OpenAlephInstanceSettings;
+		openPluginSettings: () => void;
 	} = $props();
 	const schemata: Schema[] = listEntitySchemata();
 
@@ -104,6 +106,7 @@
 <CollectionSelector
 	{loadCollections}
 	{getInstanceSettings}
+	{openPluginSettings}
 	bind:selectedCollection
 />
 <h3>
