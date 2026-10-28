@@ -45,7 +45,7 @@
 
 <fieldset>
 	<legend
-		class="property-label {property.description ? 'has-description' : ''}"
+		class="property-label {property.description ? 'with-description' : ''}"
 		aria-label={property.description ?? undefined}
 	>
 		{property.label}{#if required}<span class="required" aria-hidden="true">
@@ -107,7 +107,7 @@
 </fieldset>
 
 <style>
-	.property-label .with-description {
+	.property-label.with-description {
 		cursor: help;
 	}
 	.required {
@@ -121,11 +121,10 @@
 
 	.value {
 		display: inline-flex;
-		font-size: 14px;
 		border: 1px solid;
 		gap: 4px;
 		background: var(--accentsoft);
-		border: 1px solid #d9d3ea;
+		border: 1px solid var(--color-base-40);
 		border-radius: 8px;
 		padding: 4px 4px 4px 8px;
 	}
@@ -134,7 +133,6 @@
 	}
 	.values .add {
 		all: unset;
-		font-size: 14px;
 		color: var(--icon-color);
 		padding: 4px;
 		cursor: pointer;
