@@ -36,7 +36,7 @@
 		flex-direction: column;
 		gap: 0.5em;
 		border-radius: 8px;
-		background: #ffffff;
+		background: var(--background-primary);
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 		margin-inline: 0;
 		padding: 16px;
@@ -57,11 +57,5 @@
 		background: transparent;
 		font-size: 1.1em;
 		line-height: 1;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.card {
-			background: #0f0f0f98;
-		}
 	}
 </style>
