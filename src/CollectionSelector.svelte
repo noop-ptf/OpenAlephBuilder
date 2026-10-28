@@ -56,7 +56,7 @@
 		{:else}
 			<select
 				class:stale={$collections.status === 'loading'}
-				class="select"
+				class="select dropdown"
 				bind:value={
 					() => (selectedCollection ? keyOf(selectedCollection) : ''),
 					(key) =>
