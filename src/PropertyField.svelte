@@ -44,18 +44,14 @@
 </script>
 
 <fieldset>
-	<legend>
+	<legend
+		class="property-label {property.description ? 'has-description' : ''}"
+		aria-label={property.description ?? undefined}
+	>
 		{property.label}{#if required}<span class="required" aria-hidden="true">
 				*</span
 			>{/if}
 		{#if debug}({property.type.label}){/if}
-		{#if property.description}
-			<span
-				class="info-hover"
-				aria-label={property.description}
-				{@attach lucideIcon('info')}
-			></span>
-		{/if}
 	</legend>
 	<div class="values">
 		{#each values as _, i}
@@ -111,6 +107,9 @@
 </fieldset>
 
 <style>
+	.property-label .with-description {
+		cursor: help;
+	}
 	.required {
 		color: crimson;
 	}
@@ -122,6 +121,7 @@
 
 	.value {
 		display: inline-flex;
+		font-size: 14px;
 		border: 1px solid;
 		gap: 4px;
 		background: var(--accentsoft);
@@ -134,11 +134,15 @@
 	}
 	.values .add {
 		all: unset;
+		font-size: 14px;
 		color: var(--icon-color);
 		padding: 4px;
+		cursor: pointer;
+		text-decoration: underline dotted;
+		text-underline-offset: 4px;
 	}
-	.info-hover {
-		color: var(--icon-color);
-		padding-left: 2px;
+	.values .add:hover {
+		color: var(--color-accent-2);
+		text-decoration: underline solid;
 	}
 </style>

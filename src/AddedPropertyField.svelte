@@ -39,7 +39,7 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 0.2em;
+		gap: 4px;
 	}
 
 	.added-field :global(fieldset) {
