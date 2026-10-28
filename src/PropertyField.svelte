@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { lucideIcon } from './lucideIcon';
 	import type { Property } from '@opensanctions/followthemoney';
 	import CustomCombobox from './CustomCombobox.svelte';
 	import { createAttachmentKey } from 'svelte/attachments';
@@ -43,11 +44,18 @@
 </script>
 
 <fieldset>
-	<legend title={property.description ?? undefined}>
+	<legend>
 		{property.label}{#if required}<span class="required" aria-hidden="true">
 				*</span
 			>{/if}
 		{#if debug}({property.type.label}){/if}
+		{#if property.description}
+			<span
+				class="info-hover"
+				aria-label={property.description}
+				{@attach lucideIcon('info')}
+			></span>
+		{/if}
 	</legend>
 	<div class="values">
 		{#each values as _, i}
@@ -128,5 +136,9 @@
 		all: unset;
 		color: var(--icon-color);
 		padding: 4px;
+	}
+	.info-hover {
+		color: var(--icon-color);
+		padding-left: 2px;
 	}
 </style>
