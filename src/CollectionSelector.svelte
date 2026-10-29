@@ -46,12 +46,12 @@
 		{#if $collections.data.length === 0}
 			<div class="error">
 				<p>
-					No investigations found. Open Settings and connect to an
+					No investigations found. Open the settings and connect to an
 					OpenAleph instance where you have an investigation you can
-					edit / add entities to.
+					add entities to.
 				</p>
-				<button onclick={openPluginSettings}>Open Settings</button>
-				<button onclick={refreshWithFeedback}>Retry</button>
+				<button onclick={openPluginSettings}>Open settings</button>
+				<button onclick={refreshWithFeedback}>Check again</button>
 			</div>
 		{:else}
 			<select
