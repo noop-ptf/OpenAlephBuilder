@@ -121,7 +121,7 @@ side, the component will still be type-checked correctly.
 			<Combobox.ScrollUpButton>
 				<span {@attach lucideIcon('chevrons-up')}></span>
 			</Combobox.ScrollUpButton>
-			<Combobox.Viewport class="p-1">
+			<Combobox.Viewport>
 				{#each filteredItems as item (item.value)}
 					<Combobox.Item
 						value={item.value}
@@ -176,11 +176,19 @@ side, the component will still be type-checked correctly.
 		box-sizing: border-box;
 		margin: 0;
 		padding: 6px;
-		background-color: var(--schema-default-bg);
+		border: var(--border-width) solid var(--background-modifier-border);
+		background-color: var(--suggestion-background);
+		backdrop-filter: var(--suggestion-backdrop-filter);
+		border-radius: var(--radius-m);
+	}
+
+	:global(.options [data-combobox-item]) {
+		border-radius: var(--radius-s);
+		padding: var(--size-2-3) var(--size-4-2) var(--size-2-3) var(--size-4-2);
 	}
 
 	:global(.options [data-highlighted]) {
-		background-color: rgba(127, 127, 127, 0.25);
+		background-color: var(--background-modifier-hover);
 	}
 
 	:global(.combobox-input) {
