@@ -63,7 +63,7 @@
 	{#each card.addedProps as ap, apIndex (ap.property.name)}
 		<AddedPropertyField
 			entity={card.entity}
-			bind:ap={card.addedProps[apIndex]}
+			bind:ap={() => ap, (v) => (card.addedProps[apIndex] = v)}
 			required={requiredNames.has(ap.property.name)}
 			onremove={() => toggleProp(ap.property)}
 		/>

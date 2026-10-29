@@ -8,7 +8,6 @@ import type { OpenAlephCollection } from './types';
 export const VIEW_TYPE_OPENALEPH_BUILDER = 'openaleph-builder-view';
 
 export class OpenAlephBuilderView extends ItemView {
-	// A variable to hold on to the Counter instance mounted in this ItemView.
 	grid: ReturnType<typeof EntityCardGrid> | undefined;
 	private plugin: OpenAlephPlugin;
 

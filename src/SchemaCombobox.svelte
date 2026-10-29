@@ -10,7 +10,7 @@
 		handleSchemaChange,
 		autofocus = false,
 	}: {
-		selectedSchema: string;
+		selectedSchema: string | undefined;
 		schemata: Schema[];
 		handleSchemaChange: (name: string) => void;
 		autofocus?: boolean;
@@ -26,8 +26,12 @@
 	const schemaItems = $derived(
 		schemata.map((s) => ({ schema: s, value: s.name, label: s.label })),
 	);
-	function schemaForValue(value) {
-		return schemata.find((s) => s.name === value);
+	function schemaForValue(value: string): Schema {
+		const schema = schemata.find((s) => s.name === value);
+		if (schema === undefined) {
+			throw new Error(`Parameter ${value} is not a proper schema`);
+		}
+		return schema;
 	}
 </script>
 

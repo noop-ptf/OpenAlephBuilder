@@ -79,7 +79,7 @@
 <div class="entities">
 	{#each cards as card, index (card.key)}
 		<EntityCard
-			bind:card={cards[index]}
+			bind:card={() => card, (c) => (cards[index] = c)}
 			{schemata}
 			onremove={() => removeCard(index)}
 		/>

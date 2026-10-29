@@ -135,8 +135,16 @@ export default class OpenAlephPlugin extends Plugin {
 		);
 	}
 
-	getInstanceSettings(id: string): OpenAlephInstanceSettings | undefined {
-		return this.settings.instances.find((instance) => instance.id === id);
+	getInstanceSettings(id: string): OpenAlephInstanceSettings {
+		const instanceSettings = this.settings.instances.find(
+			(instance) => instance.id === id,
+		);
+		if (instanceSettings === undefined) {
+			throw new Error(
+				`No instance settings found for id ${id}. Were they deleted in the meantime?`,
+			);
+		}
+		return instanceSettings;
 	}
 
 	async saveSettings() {
