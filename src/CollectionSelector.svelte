@@ -48,7 +48,7 @@
 				<p>
 					No investigations found. Open the settings and connect to an
 					OpenAleph instance where you have an investigation you can
-					add entities to.
+					edit.
 				</p>
 				<button onclick={openPluginSettings}>Open settings</button>
 				<button onclick={refreshWithFeedback}>Check again</button>
