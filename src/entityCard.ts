@@ -11,6 +11,7 @@ export interface CardState {
 	entity: Entity | undefined; // created lazily once a schema is first chosen
 	addedProps: AddedProperty[]; // both featured-toggled and "+more"-added properties
 	autofocus: boolean; // true only for the card just created via the ghost tile
+	editing: boolean; // true, when we're currently editing
 }
 
 export function createCardState(autofocus = false): CardState {
@@ -18,6 +19,7 @@ export function createCardState(autofocus = false): CardState {
 		model.generateRandomId(),
 		undefined,
 		autofocus,
+		true,
 	);
 }
 
@@ -29,12 +31,14 @@ export function createCardStateFromEntity(
 	key: string,
 	entity: Entity | undefined,
 	autofocus = false,
+	editing = true,
 ): CardState {
 	return {
 		key,
 		entity,
 		addedProps: entity ? buildAddedPropsFromEntity(entity) : [],
 		autofocus,
+		editing,
 	};
 }
 
