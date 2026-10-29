@@ -121,7 +121,7 @@
 {:else if cards.length === 0}
 	<p>Create an entity to upload</p>
 {:else}
-	<button onclick={postEntitiesToSelectedCollection}
+	<button class="mod-cta" onclick={postEntitiesToSelectedCollection}
 		>Upload {cards.length}
 		{cards.length == 1 ? 'entity' : 'entities'} to OpenAleph</button
 	>
