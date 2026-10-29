@@ -42,6 +42,13 @@ export default defineConfig(
 				extraFileExtensions: ['.svelte'],
 			},
 		},
+		plugins: {
+			'@typescript-eslint': tseslint.plugin,
+		},
+		rules: {
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': 'error',
+		},
 	},
 	{
 		files: ['**/*.ts', '**/*.tsx', '**/*.svelte'],

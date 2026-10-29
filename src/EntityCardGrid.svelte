@@ -45,7 +45,6 @@
 	}
 
 	let selectedCollection: OpenAlephCollection | null = $state(null);
-	$inspect(selectedCollection);
 
 	function postEntitiesToSelectedCollection() {
 		let entities = cards

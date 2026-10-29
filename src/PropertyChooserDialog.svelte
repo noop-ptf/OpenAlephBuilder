@@ -46,7 +46,7 @@
 </script>
 
 <Dialog
-	buttonText={'Add property'}
+	buttonText="Add property"
 	bind:open
 	contentProps={{
 		onOpenAutoFocus: (e) => {

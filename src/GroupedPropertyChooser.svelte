@@ -10,9 +10,6 @@
 	};
 	let { groupedItems, groupLabels, groupOrder, itemClickHandler }: Props =
 		$props();
-	$inspect(groupedItems);
-
-	// TODO: take JS/CSS code from
 </script>
 
 {#each groupOrder as group (group)}

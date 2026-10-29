@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { lucideIcon } from './lucideIcon';
 	import type { Property } from '@opensanctions/followthemoney';
 	import CustomCombobox from './CustomCombobox.svelte';
 	import { createAttachmentKey } from 'svelte/attachments';
@@ -54,7 +53,7 @@
 		{#if debug}({property.type.label}){/if}
 	</legend>
 	<div class="values">
-		{#each values as _, i}
+		{#each values, i (i)}
 			<!-- FtM has 20 property types; only country/gender/language/topic (enum,
            via .values) and date/number/url/email/phone/text/json/html get a
            dedicated widget here. Everything else (address, checksum,
