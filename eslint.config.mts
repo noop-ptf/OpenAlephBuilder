@@ -1,4 +1,7 @@
 import obsidianmd from 'eslint-plugin-obsidianmd';
+import svelte from 'eslint-plugin-svelte';
+import svelteParser from 'svelte-eslint-parser';
+import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import { globalIgnores, defineConfig } from 'eslint/config';
 
@@ -16,21 +19,32 @@ export default defineConfig(
 	]),
 	{
 		languageOptions: {
-			globals: {
-				...globals.browser,
-			},
+			globals: { ...globals.browser },
 			parserOptions: {
 				projectService: {
 					allowDefaultProject: ['eslint.config.mts', 'manifest.json'],
 				},
 				tsconfigRootDir: import.meta.dirname,
-				extraFileExtensions: ['.json'],
+				extraFileExtensions: ['.json', '.svelte'],
 			},
 		},
 	},
 	...obsidianmd.configs.recommended,
+	...svelte.configs['flat/recommended'],
 	{
-		files: ['**/*.ts', '**/*.tsx'],
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			parser: svelteParser,
+			parserOptions: {
+				parser: tseslint.parser, // for <script lang="ts">
+				projectService: true,
+				tsconfigRootDir: import.meta.dirname,
+				extraFileExtensions: ['.svelte'],
+			},
+		},
+	},
+	{
+		files: ['**/*.ts', '**/*.tsx', '**/*.svelte'],
 		rules: {
 			'eslint-comments/no-restricted-disable': 'off',
 			'obsidianmd/ui/sentence-case': [
