@@ -1,10 +1,4 @@
-import {
-	Plugin,
-	Notice,
-	WorkspaceLeaf,
-	PluginSettingTab,
-	type App,
-} from 'obsidian';
+import { Plugin, Notice, WorkspaceLeaf, type App } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenAlephSettingTab } from './settings';
 import type {
 	OpenAlephCollection,
@@ -83,7 +77,7 @@ export default class OpenAlephPlugin extends Plugin {
 			setting.open();
 			setting.openTabById(this.manifest.id);
 		} else {
-			new Notice('Open Settings manually: Ctrl/Cmd + ,');
+			new Notice('Open settings manually: Ctrl/cmd + ,');
 		}
 	}
 

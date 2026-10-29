@@ -31,7 +31,7 @@
 				.filter(([, props]) => props.length > 0),
 		),
 	);
-	// Replace the "Type-specific Details" by their name, if we have one for it
+	// Replace the "Type-specific details" by their name, if we have one for it
 	const groupLabels = $derived.by(() => {
 		const specificLabel =
 			FIELD_GROUPS.specificLabel[
@@ -46,7 +46,7 @@
 </script>
 
 <Dialog
-	buttonText={'Add Property'}
+	buttonText={'Add property'}
 	bind:open
 	contentProps={{
 		onOpenAutoFocus: (e) => {
