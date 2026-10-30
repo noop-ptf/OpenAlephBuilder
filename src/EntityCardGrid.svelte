@@ -76,9 +76,9 @@
 
 	let testcard = $state<CardState>();
 
-	testEntity().then((entity) => {
-		testcard = testCard(entity);
-	});
+	// testEntity().then((entity) => {
+	// 	testcard = testCard(entity);
+	// });
 </script>
 
 <h3>Entities</h3>
