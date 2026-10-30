@@ -13,7 +13,13 @@
 			{#if ap.values.length > 0}
 				{#each ap.values as value}
 					<li class="separated-value">
-						<span aria-label={ap.property.label}>{value}</span>
+						<span aria-label={ap.property.label}>
+							{#if ap.property.type.values.size > 0}
+								{ap.property.type.values.get(value)}
+							{:else}
+								{value}
+							{/if}
+						</span>
 					</li>
 				{/each}
 			{/if}
