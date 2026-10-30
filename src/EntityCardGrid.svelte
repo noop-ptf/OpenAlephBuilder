@@ -2,8 +2,8 @@
 	import { Notice } from 'obsidian';
 	import { lucideIcon } from './lucideIcon';
 	import type { Schema } from '@opensanctions/followthemoney';
-	import { listEntitySchemata, testEntity } from './ftm';
-	import { createCardState, testCard, type CardState } from './entityCard';
+	import { listEntitySchemata } from './ftm';
+	import { createCardState, type CardState } from './entityCard';
 	import EntityCard from './EntityCard.svelte';
 	import CollectionSelector from './CollectionSelector.svelte';
 	import type {

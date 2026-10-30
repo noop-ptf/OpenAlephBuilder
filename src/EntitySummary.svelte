@@ -11,7 +11,7 @@
 	<ul>
 		{#each card.addedProps as ap (ap.property.name)}
 			{#if ap.values.length > 0}
-				{#each ap.values as value}
+				{#each ap.values as value, i (i)}
 					<li class="separated-value">
 						<span aria-label={ap.property.label}>
 							{#if ap.property.type.values.size > 0}
