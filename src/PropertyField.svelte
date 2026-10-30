@@ -37,8 +37,11 @@
 	function removeValue(index: number) {
 		values.splice(index, 1);
 	}
-	function focusOnMount(node: HTMLInputElement | HTMLTextAreaElement) {
-		node.focus();
+	function focusOnMount(value: string | undefined) {
+		return function inner(node: HTMLInputElement | HTMLTextAreaElement) {
+			if (value) return;
+			node.focus();
+		};
 	}
 </script>
 
@@ -78,15 +81,18 @@
 					<CustomCombobox
 						items={enumValues}
 						bind:value={values[i]}
-						inputProps={{ [createAttachmentKey()]: focusOnMount }}
+						inputProps={{
+							[createAttachmentKey()]: focusOnMount(values[i]),
+						}}
 					>
 						{#snippet itemRow(item)}
 							{item.label}
 						{/snippet}
 					</CustomCombobox>
 				{:else if property.type.name === 'text' || property.type.name === 'json' || property.type.name === 'html'}
-					<textarea bind:value={values[i]} {@attach focusOnMount}
-					></textarea>
+					<textarea
+						bind:value={values[i]}
+						{@attach focusOnMount(values[i])}></textarea>
 				{:else}
 					<PropertyInput
 						name={property.name}

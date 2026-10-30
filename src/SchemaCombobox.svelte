@@ -19,6 +19,7 @@
 	const inputProps = {
 		placeholder: 'What kind of entity is this?',
 		[createAttachmentKey()]: (node: HTMLInputElement) => {
+			if (selectedSchema) return;
 			if (autofocus) node.focus();
 		},
 	};

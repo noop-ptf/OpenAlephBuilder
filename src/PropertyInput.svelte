@@ -23,7 +23,10 @@
 	{name}
 	placeholder={typeMapping[type]?.placeholder}
 	bind:value
-	{@attach (node) => node.focus()}
+	{@attach ((value) => (node) => {
+		if (value) return;
+		node.focus();
+	})(value)}
 />
 
 <style>

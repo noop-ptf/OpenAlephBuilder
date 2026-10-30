@@ -23,7 +23,7 @@
 	let {
 		items = [],
 		value = $bindable(),
-		open = $bindable(true),
+		open = $bindable(false),
 		inputProps,
 		contentProps,
 		itemRow,
