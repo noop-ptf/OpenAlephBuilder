@@ -2,8 +2,8 @@
 	import { Notice } from 'obsidian';
 	import { lucideIcon } from './lucideIcon';
 	import type { Schema } from '@opensanctions/followthemoney';
-	import { listEntitySchemata } from './ftm';
-	import { createCardState, type CardState } from './entityCard';
+	import { listEntitySchemata, testEntity } from './ftm';
+	import { createCardState, testCard, type CardState } from './entityCard';
 	import EntityCard from './EntityCard.svelte';
 	import CollectionSelector from './CollectionSelector.svelte';
 	import type {
@@ -73,10 +73,19 @@
 			);
 		}
 	}
+
+	let testcard = $state<CardState>();
+
+	testEntity().then((entity) => {
+		testcard = testCard(entity);
+	});
 </script>
 
 <h3>Entities</h3>
 <div class="entities">
+	{#if testcard}
+		<EntityCard bind:card={testcard} {schemata} onremove={() => 0} />
+	{/if}
 	{#each cards as card, index (card.key)}
 		<EntityCard
 			bind:card={() => card, (c) => (cards[index] = c)}

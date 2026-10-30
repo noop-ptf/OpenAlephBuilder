@@ -1,4 +1,9 @@
-import { Model, Property, defaultModel } from '@opensanctions/followthemoney';
+import {
+	type Entity,
+	Model,
+	Property,
+	defaultModel,
+} from '@opensanctions/followthemoney';
 import type { Schema } from '@opensanctions/followthemoney';
 
 export const model = new Model(defaultModel);
@@ -381,4 +386,18 @@ export function getGroupedProperty(
 	});
 
 	return grouped;
+}
+
+export async function testEntity(): Promise<Entity> {
+	const personSchema = model.schemata.Person;
+	if (!personSchema) {
+		throw new Error(
+			"Couldn't find person schema. This should not happen /o\\",
+		);
+	}
+	const entity = await model.createEntity(personSchema);
+	entity.setProperty('name', 'Tonn Zinga');
+	entity.setProperty('nationality', 'ie');
+	entity.setProperty('phone', '+4710101');
+	return entity;
 }
