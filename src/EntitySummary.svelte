@@ -11,14 +11,36 @@
 	<ul>
 		{#each card.addedProps as ap (ap.property.name)}
 			{#if ap.values.length > 0}
-				<li>
-					<ul>
-						{#each ap.values as value}
-							<li>{value}</li>
-						{/each}
-					</ul>
-				</li>
+				{#each ap.values as value}
+					<li class="separated-value">
+						<span aria-label={ap.property.label}>{value}</span>
+					</li>
+				{/each}
 			{/if}
 		{/each}
 	</ul>
 {/if}
+
+<style>
+	ul,
+	ul li {
+		margin: 0;
+		padding: 0;
+		text-indent: 0;
+		list-style-type: none;
+		display: inline;
+	}
+
+	.separated-value:not(:first-of-type)::before {
+		margin-left: 8px;
+		margin-right: 8px;
+		content: '';
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+		border-radius: 4px;
+		background-color: var(--background-modifier-hover);
+	}
+</style>
